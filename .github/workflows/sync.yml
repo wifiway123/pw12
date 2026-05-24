@@ -15,7 +15,11 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # 检出上次同步的网页端状态，用于比对文件 Hash，避免无限触发更新
+      # 提前安装必需的解包依赖
+      - name: Install Dependencies
+        run: sudo apt-get update && sudo apt-get install -y zstd xz-utils curl jq
+
+      # 检出上次同步的网页端状态
       - name: Checkout Previous State
         uses: actions/checkout@v4
         with:
@@ -37,6 +41,12 @@ jobs:
           echo "### 📦 更新日志 ($BEIJING_TIME)" > $LOG_FILE
           rm -f plugin_list.txt && touch plugin_list.txt
           MAIN_UPDATED=false
+          LATEST_VERSION_STR=""
+          
+          # 💡 核心修复 2：将上次的旧文件拷贝到当前工作区作为缓存，让 curl -z 真正起效，拒绝重复下载！
+          if [ -d "old_state" ]; then
+            cp -r old_state/packages-* . 2>/dev/null || true
+          fi
           
           for v in "${VERSIONS[@]}"; do
             for d in "${DIRS[@]}"; do
@@ -60,7 +70,11 @@ jobs:
                         if [ "$OLD_HASH" != "$NEW_HASH" ]; then
                           PLUGIN_NAME=$(echo "$filename" | cut -d'_' -f1)
                           echo "$PLUGIN_NAME" >> plugin_list.txt
-                          [ "$PLUGIN_NAME" = "luci-app-passwall" ] && MAIN_UPDATED=true
+                          
+                          if [ "$PLUGIN_NAME" = "luci-app-passwall" ]; then
+                            MAIN_UPDATED=true
+                            LATEST_VERSION_STR=$(echo "$filename" | sed -E 's/luci-app-passwall_([0-9.]+-[0-9a-zA-Z_.]+)_all\.ipk/\1/')
+                          fi
                           
                           # 清理同名旧版
                           find "$LOCAL_DIR" -type f -name "${PLUGIN_NAME}_*.ipk" ! -name "$filename" -exec rm -f {} +
@@ -88,7 +102,7 @@ jobs:
           done
           
           # =======================================================
-          # 🩹 动态修补 21.02：借用 22.03 的组件并完美重建索引
+          # 🩹 动态修补 21.02：全兼容 ZSTD/XZ/GZ 解压嗅探器
           # =======================================================
           WORKSPACE=$PWD
           DIR_2102="$WORKSPACE/packages-21.02/$ARCH/passwall_packages"
@@ -96,7 +110,6 @@ jobs:
           
           if [ -d "$DIR_2102" ] && [ -d "$DIR_2203" ]; then
             cd "$DIR_2102"
-            # 支持借用多个核心组件
             for borrow_pkg in "xray-core" "sing-box"; do
               PKG_FILE=$(ls "$DIR_2203"/${borrow_pkg}_*.ipk 2>/dev/null | head -n 1)
               if [ -n "$PKG_FILE" ]; then
@@ -105,10 +118,23 @@ jobs:
                   cp "$PKG_FILE" .
                   echo "- 🩹 动态修补: 成功将 $FNAME 注入 21.02 源并重写索引" >> "$WORKSPACE/$LOG_FILE"
                   
-                  # 核心：解包读取控制信息并写入 21.02 索引
                   if [ -f "Packages.gz" ]; then
                     gunzip -k Packages.gz || true
-                    tar -zxO -f "$FNAME" ./control.tar.gz | tar -zxO -f - ./control >> Packages
+                    
+                    # 💡 核心修复 1：智能解压提取 control 信息，兼容所有现代 OpenWrt 压缩标准
+                    mkdir -p /tmp/pkg_extract
+                    tar -xf "$FNAME" -C /tmp/pkg_extract 2>/dev/null || true
+                    
+                    if [ -f /tmp/pkg_extract/control.tar.gz ]; then
+                      tar -zxO -f /tmp/pkg_extract/control.tar.gz ./control >> Packages
+                    elif [ -f /tmp/pkg_extract/control.tar.zst ]; then
+                      zstd -d /tmp/pkg_extract/control.tar.zst -c | tar -xO -f - ./control >> Packages
+                    elif [ -f /tmp/pkg_extract/control.tar.xz ]; then
+                      xz -d /tmp/pkg_extract/control.tar.xz -c | tar -xO -f - ./control >> Packages
+                    fi
+                    
+                    rm -rf /tmp/pkg_extract
+                    
                     echo "Filename: $FNAME" >> Packages
                     echo "Size: $(stat -c%s "$FNAME")" >> Packages
                     echo "SHA256sum: $(sha256sum "$FNAME" | awk '{print $1}')" >> Packages
@@ -121,6 +147,21 @@ jobs:
             cd "$WORKSPACE"
           fi
           
+          # 注入版本号日志
+          if [ -n "$LATEST_VERSION_STR" ]; then
+            sed -i "1a \\" "$LOG_FILE"
+            sed -i "2i > 🚀 **当前一键包内 Passwall 核心版本: \`${LATEST_VERSION_STR}\`**" "$LOG_FILE"
+            sed -i "3i \\" "$LOG_FILE"
+          else
+            CURRENT_FILE=$(find packages-24.10/$ARCH -type f -name "luci-app-passwall_*.ipk" 2>/dev/null | head -n 1 || true)
+            if [ -n "$CURRENT_FILE" ]; then
+              CUR_VER=$(basename "$CURRENT_FILE" | sed -E 's/luci-app-passwall_([0-9.]+-[0-9a-zA-Z_.]+)_all\.ipk/\1/')
+              sed -i "1a \\" "$LOG_FILE"
+              sed -i "2i > ℹ️ **当前包内 Passwall 核心版本: \`${CUR_VER}\` (未检测到上游新变动)**" "$LOG_FILE"
+              sed -i "3i \\" "$LOG_FILE"
+            fi
+          fi
+          
           if [ -s plugin_list.txt ]; then
             sort -u plugin_list.txt | sed 's/^/- ✅ 更新: /' >> $LOG_FILE
           else
@@ -131,7 +172,6 @@ jobs:
       - name: Build .run Installers
         if: env.MAIN_UPDATED == 'true' || github.event_name == 'workflow_dispatch'
         run: |
-          sudo apt-get update && sudo apt-get install -y zstd xz-utils || true
           mkdir -p run_output
           ARCH="aarch64_cortex-a53"
           
@@ -195,7 +235,6 @@ jobs:
       - name: Generate Index
         run: |
           mkdir -p web_root
-          # 移动所有的源文件夹到 web_root 准备发布网页
           mv packages-* web_root/ 2>/dev/null || true
           
           generate_index() {
@@ -229,7 +268,7 @@ jobs:
         run: |
           TAG_NAME="latest-a53"
           gh release delete "$TAG_NAME" --cleanup-tag -y || true
-          gh release create "$TAG_NAME" run_output/*.run --title "Passwall-A53-一键安装包" --notes-file update_log.txt
+          gh release create "$TAG_NAME" run_output/*.run --title "Passwall-A53-一键安装离线包" --notes-file update_log.txt
 
       - name: Deploy Software Feeds to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
