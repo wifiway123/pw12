@@ -1,0 +1,240 @@
+name: Sync and Mixed Build Files
+
+on:
+  schedule:
+    - cron: '0 18 * * 3,0'
+  workflow_dispatch:
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # 检出上次同步的网页端状态，用于比对文件 Hash，避免无限触发更新
+      - name: Checkout Previous State
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: old_state
+        continue-on-error: true
+
+      - name: Sync Packages & Clean Legacy Files
+        id: sync
+        run: |
+          BEIJING_TIME=$(TZ='Asia/Shanghai' date +'%Y-%m-%d %H:%M')
+          echo "REPORT_DATE=$BEIJING_TIME" >> $GITHUB_ENV
+          
+          VERSIONS=("packages-24.10" "packages-23.05" "packages-22.03" "packages-21.02")
+          DIRS=("passwall_packages" "passwall2" "passwall_luci")
+          ARCH="aarch64_cortex-a53"
+          
+          LOG_FILE="update_log.txt"
+          echo "### 📦 更新日志 ($BEIJING_TIME)" > $LOG_FILE
+          rm -f plugin_list.txt && touch plugin_list.txt
+          MAIN_UPDATED=false
+          
+          for v in "${VERSIONS[@]}"; do
+            for d in "${DIRS[@]}"; do
+              LOCAL_DIR="$v/$ARCH/$d"
+              mkdir -p "$LOCAL_DIR"
+              PAGE_URL="https://sourceforge.net/projects/openwrt-passwall-build/files/releases/$v/$ARCH/$d/"
+              REMOTE_FILES=$(curl -sL "$PAGE_URL" | grep -o 'href="[^"]*/download"' | awk -F'/' '{print $(NF-1)}' || true)
+              
+              for filename in $REMOTE_FILES; do
+                [ -z "$filename" ] && continue
+                LOCAL_FILE="$LOCAL_DIR/$filename"
+                OLD_STATE_FILE="old_state/$LOCAL_DIR/$filename"
+                
+                case "$filename" in
+                  *.ipk)
+                    [ -f "$OLD_STATE_FILE" ] && OLD_HASH=$(md5sum "$OLD_STATE_FILE" | cut -d' ' -f1) || OLD_HASH="none"
+                    
+                    if curl -fsL -R -O -z "$LOCAL_FILE" --output-dir "$LOCAL_DIR" "https://downloads.sourceforge.net/project/openwrt-passwall-build/releases/$v/$ARCH/$d/$filename" --retry 3; then
+                      if [ -f "$LOCAL_FILE" ] && [ $(wc -c < "$LOCAL_FILE") -gt 2048 ]; then
+                        NEW_HASH=$(md5sum "$LOCAL_FILE" | cut -d' ' -f1)
+                        if [ "$OLD_HASH" != "$NEW_HASH" ]; then
+                          PLUGIN_NAME=$(echo "$filename" | cut -d'_' -f1)
+                          echo "$PLUGIN_NAME" >> plugin_list.txt
+                          [ "$PLUGIN_NAME" = "luci-app-passwall" ] && MAIN_UPDATED=true
+                          
+                          # 清理同名旧版
+                          find "$LOCAL_DIR" -type f -name "${PLUGIN_NAME}_*.ipk" ! -name "$filename" -exec rm -f {} +
+                        fi
+                      fi
+                    fi
+                    ;;
+                  *)
+                    curl -fsL -R -O -z "$LOCAL_FILE" --output-dir "$LOCAL_DIR" "https://downloads.sourceforge.net/project/openwrt-passwall-build/releases/$v/$ARCH/$d/$filename" --retry 3 || true
+                    ;;
+                esac
+              done
+              
+              # 清理远端已删除的孤儿文件
+              if [ -n "$REMOTE_FILES" ]; then
+                for local_file in "$LOCAL_DIR"/*; do
+                  [ -e "$local_file" ] || continue
+                  fname=$(basename "$local_file")
+                  if [[ ! "$fname" == .* ]] && ! echo "$REMOTE_FILES" | grep -q "^$fname$"; then
+                    rm -f "$local_file"
+                  fi
+                done
+              fi
+            done
+          done
+          
+          # =======================================================
+          # 🩹 动态修补 21.02：借用 22.03 的组件并完美重建索引
+          # =======================================================
+          WORKSPACE=$PWD
+          DIR_2102="$WORKSPACE/packages-21.02/$ARCH/passwall_packages"
+          DIR_2203="$WORKSPACE/packages-22.03/$ARCH/passwall_packages"
+          
+          if [ -d "$DIR_2102" ] && [ -d "$DIR_2203" ]; then
+            cd "$DIR_2102"
+            # 支持借用多个核心组件
+            for borrow_pkg in "xray-core" "sing-box"; do
+              PKG_FILE=$(ls "$DIR_2203"/${borrow_pkg}_*.ipk 2>/dev/null | head -n 1)
+              if [ -n "$PKG_FILE" ]; then
+                FNAME=$(basename "$PKG_FILE")
+                if [ ! -f "$FNAME" ]; then
+                  cp "$PKG_FILE" .
+                  echo "- 🩹 动态修补: 成功将 $FNAME 注入 21.02 源并重写索引" >> "$WORKSPACE/$LOG_FILE"
+                  
+                  # 核心：解包读取控制信息并写入 21.02 索引
+                  if [ -f "Packages.gz" ]; then
+                    gunzip -k Packages.gz || true
+                    tar -zxO -f "$FNAME" ./control.tar.gz | tar -zxO -f - ./control >> Packages
+                    echo "Filename: $FNAME" >> Packages
+                    echo "Size: $(stat -c%s "$FNAME")" >> Packages
+                    echo "SHA256sum: $(sha256sum "$FNAME" | awk '{print $1}')" >> Packages
+                    echo "" >> Packages
+                    rm -f Packages.gz && gzip -k Packages
+                  fi
+                fi
+              fi
+            done
+            cd "$WORKSPACE"
+          fi
+          
+          if [ -s plugin_list.txt ]; then
+            sort -u plugin_list.txt | sed 's/^/- ✅ 更新: /' >> $LOG_FILE
+          else
+            echo "- ℹ️ 今日无新安装包更新" >> $LOG_FILE
+          fi
+          echo "MAIN_UPDATED=$MAIN_UPDATED" >> $GITHUB_ENV
+
+      - name: Build .run Installers
+        if: env.MAIN_UPDATED == 'true' || github.event_name == 'workflow_dispatch'
+        run: |
+          sudo apt-get update && sudo apt-get install -y zstd xz-utils || true
+          mkdir -p run_output
+          ARCH="aarch64_cortex-a53"
+          
+          create_run() {
+            local source_ver=$1
+            local target_ver=$2
+            shift 2
+            local pkgs=("$@")
+            local tmp_dir="run_tmp_$target_ver/passwall_install_tmp"
+            mkdir -p "$tmp_dir"
+            for pkg in "${pkgs[@]}"; do
+              found=$(find "$source_ver/$ARCH" -type f -name "${pkg}_*.ipk" 2>/dev/null | head -n 1 || true)
+              if [ -n "$found" ] && { [ "$pkg" = "sing-box" ] || [ "$pkg" = "xray-core" ]; }; then
+                [ $(wc -c < "$found") -lt 1000000 ] && found=""
+              fi
+              if [ -z "$found" ]; then
+                found=$(find packages-*/$ARCH -type f -name "${pkg}_*.ipk" -size +2k 2>/dev/null | head -n 1 || true)
+              fi
+              if [ -n "$found" ] && [ -f "$found" ]; then
+                cp "$found" "$tmp_dir/"
+                if [ "$target_ver" = "21.02" ]; then
+                  mkdir -p "$tmp_dir/unpack"
+                  tar -xf "$tmp_dir/$(basename "$found")" -C "$tmp_dir/unpack/" 2>/dev/null || true
+                  cd "$tmp_dir/unpack"
+                  for archive in *; do
+                    [ -f "$archive" ] && {
+                      [[ "$archive" == *.zst ]] && zstd -d "$archive" --rm 2>/dev/null || true
+                      [[ "$archive" == *.xz ]] && xz -d "$archive" --rm 2>/dev/null || true
+                      gzip "${archive%.*}" 2>/dev/null || true
+                    }
+                  done
+                  tar -czf "../$(basename "$found")" debian-binary control.tar.gz data.tar.gz 2>/dev/null || true
+                  cd - >/dev/null
+                  rm -rf "$tmp_dir/unpack"
+                fi
+              fi
+            done
+            echo "#!/bin/sh" > "$tmp_dir/install.sh"
+            echo "opkg update && opkg install *.ipk" >> "$tmp_dir/install.sh"
+            cat << 'EOF' > "run_output/install_passwall_${target_ver}.run"
+          #!/bin/sh
+          ARCHIVE=$(awk '/^__ARCHIVE_BELOW__/ {print NR + 1; exit 0; }' "$0")
+          tail -n+$ARCHIVE "$0" | tar -xz -C /tmp
+          cd /tmp/passwall_install_tmp && sh install.sh
+          rm -rf /tmp/passwall_install_tmp
+          exit 0
+          __ARCHIVE_BELOW__
+          EOF
+            tar -czf - -C "run_tmp_$target_ver" passwall_install_tmp >> "run_output/install_passwall_${target_ver}.run"
+            chmod +x "run_output/install_passwall_${target_ver}.run"
+            rm -rf "run_tmp_$target_ver"
+          }
+          
+          list_2=("luci-compat" "luci-app-passwall" "luci-i18n-passwall-zh-cn" "tcping" "chinadns-ng" "dns2socks" "microsocks" "xray-core" "unzip")
+          list_n=("luci-compat" "luci-app-passwall" "luci-i18n-passwall-zh-cn" "tcping" "chinadns-ng" "dns2socks" "microsocks" "xray-core" "sing-box" "unzip")
+          
+          create_run "packages-21.02" "21.02" "${list_2[@]}"
+          create_run "packages-23.05" "23.05" "${list_n[@]}"
+          create_run "packages-24.10" "24.10" "${list_n[@]}"
+
+      - name: Generate Index
+        run: |
+          mkdir -p web_root
+          # 移动所有的源文件夹到 web_root 准备发布网页
+          mv packages-* web_root/ 2>/dev/null || true
+          
+          generate_index() {
+            local dir=$1
+            local title=$2
+            local index_file="$dir/index.html"
+            [ ! -d "$dir" ] && return 0
+            echo "<html><head><meta charset='UTF-8'><meta name='robots' content='noindex,nofollow'><title>$title</title></head><body>" > "$index_file"
+            echo "<h3>Index of ${dir:-/}</h3><hr>" >> "$index_file"
+            [ "$(basename "$dir")" != "web_root" ] && echo "<div><a href='../index.html'>[ .. ]</a></div>" >> "$index_file"
+            find "$dir" -maxdepth 1 -type d -not -path "$dir" -not -path '*/.*' | sort | while read -r subdir; do
+              local name=$(basename "$subdir")
+              echo "<div>DIR: <a href='$name/index.html'>$name/</a></div>" >> "$index_file"
+            done
+            find "$dir" -maxdepth 1 -type f -not -name "index.html" -not -path '*/.*' | sort | while read -r file; do
+              local name=$(basename "$file")
+              echo "<div>FILE: <a href='$name'>$name</a></div>" >> "$index_file"
+            done
+            echo "<hr>Nodes status: OK / $REPORT_DATE</body></html>" >> "$index_file"
+          }
+          generate_index "web_root" "Software Feeds Index"
+          find web_root -maxdepth 4 -type d -not -path '*/.*' | while read -r d; do
+            [ "$d" = "web_root" ] && continue
+            generate_index "$d" "$(basename "$d")"
+          done
+
+      - name: Release .run files to GitHub Releases
+        if: env.MAIN_UPDATED == 'true' || github.event_name == 'workflow_dispatch'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG_NAME="latest-a53"
+          gh release delete "$TAG_NAME" --cleanup-tag -y || true
+          gh release create "$TAG_NAME" run_output/*.run --title "Passwall-A53-一键安装包" --notes-file update_log.txt
+
+      - name: Deploy Software Feeds to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./web_root
+          publish_branch: gh-pages
+          force_orphan: true
