@@ -1,4 +1,4 @@
-name: Sync and Mixed Build Files 去掉22.03版本
+name: Sync and Mixed Build Files
 
 on:
   schedule:
@@ -19,7 +19,7 @@ jobs:
       - name: Install Dependencies
         run: sudo apt-get update && sudo apt-get install -y zstd xz-utils curl jq
 
-      # 检出上次同步的网页端状态
+      # 检出上次同步的网页端状态（仅用于生成更新日志比对，绝对不参与实际文件混合）
       - name: Checkout Previous State
         uses: actions/checkout@v4
         with:
@@ -33,7 +33,6 @@ jobs:
           BEIJING_TIME=$(TZ='Asia/Shanghai' date +'%Y-%m-%d %H:%M')
           echo "REPORT_DATE=$BEIJING_TIME" >> $GITHUB_ENV
           
-          # 💡 彻底去掉 22.03 的同步
           VERSIONS=("packages-24.10" "packages-23.05" "packages-21.02")
           DIRS=("passwall_packages" "passwall2" "passwall_luci")
           ARCH="aarch64_cortex-a53"
@@ -44,13 +43,9 @@ jobs:
           MAIN_UPDATED=false
           LATEST_VERSION_STR=""
           
-          # 💡 核心防幽灵机制：只将目前还在 VERSIONS 列表里的版本拷贝过来作为缓存！
-          # 这样旧的 22.03 就会被彻底留在历史中，不会复活。
-          if [ -d "old_state" ]; then
-            for v in "${VERSIONS[@]}"; do
-              [ -d "old_state/$v" ] && cp -a "old_state/$v" .
-            done
-          fi
+          # 💡 核心逻辑巨变：彻底舍弃本地文件缓存！
+          # 我们不再使用 cp -a 复制旧文件，每次循环都会重新建立干净的目录。
+          # 100% 强行全量拉取，从物理根源上断绝索引与实体包错配的可能！
           
           for v in "${VERSIONS[@]}"; do
             for d in "${DIRS[@]}"; do
@@ -64,53 +59,37 @@ jobs:
                 LOCAL_FILE="$LOCAL_DIR/$filename"
                 OLD_STATE_FILE="old_state/$LOCAL_DIR/$filename"
                 
-                case "$filename" in
-                  *.ipk)
-                    [ -f "$OLD_STATE_FILE" ] && OLD_HASH=$(md5sum "$OLD_STATE_FILE" | cut -d' ' -f1) || OLD_HASH="none"
-                    
-                    if curl -fsL -R -O -z "$LOCAL_FILE" --output-dir "$LOCAL_DIR" "https://downloads.sourceforge.net/project/openwrt-passwall-build/releases/$v/$ARCH/$d/$filename" --retry 3; then
-                      if [ -f "$LOCAL_FILE" ] && [ $(wc -c < "$LOCAL_FILE") -gt 2048 ]; then
-                        NEW_HASH=$(md5sum "$LOCAL_FILE" | cut -d' ' -f1)
-                        if [ "$OLD_HASH" != "$NEW_HASH" ]; then
-                          PLUGIN_NAME=$(echo "$filename" | cut -d'_' -f1)
-                          echo "$PLUGIN_NAME" >> plugin_list.txt
-                          
-                          if [ "$PLUGIN_NAME" = "luci-app-passwall" ]; then
-                            MAIN_UPDATED=true
-                            LATEST_VERSION_STR=$(echo "$filename" | sed -E 's/luci-app-passwall_([0-9.]+-[0-9a-zA-Z_.]+)_all\.ipk/\1/')
-                          fi
-                          
-                          # 清理同名旧版
-                          find "$LOCAL_DIR" -type f -name "${PLUGIN_NAME}_*.ipk" ! -name "$filename" -exec rm -f {} +
+                # 无脑强行全量下载，坚决不用 -z
+                curl -fsL -R -O --output-dir "$LOCAL_DIR" "https://downloads.sourceforge.net/project/openwrt-passwall-build/releases/$v/$ARCH/$d/$filename" --retry 3 || true
+                
+                if [[ "$filename" == *.ipk ]]; then
+                  if [ -f "$LOCAL_FILE" ]; then
+                    # 防御性编程：如果下载到了 SourceForge 的 404 HTML 报错页 (通常极小)，直接干掉
+                    if [ $(wc -c < "$LOCAL_FILE") -lt 2048 ]; then
+                      rm -f "$LOCAL_FILE"
+                    else
+                      # 正常文件比对以生成日志
+                      NEW_HASH=$(md5sum "$LOCAL_FILE" | cut -d' ' -f1)
+                      [ -f "$OLD_STATE_FILE" ] && OLD_HASH=$(md5sum "$OLD_STATE_FILE" | cut -d' ' -f1) || OLD_HASH="none"
+                      
+                      if [ "$OLD_HASH" != "$NEW_HASH" ]; then
+                        PLUGIN_NAME=$(echo "$filename" | cut -d'_' -f1)
+                        echo "$PLUGIN_NAME" >> plugin_list.txt
+                        
+                        if [ "$PLUGIN_NAME" = "luci-app-passwall" ]; then
+                          MAIN_UPDATED=true
+                          LATEST_VERSION_STR=$(echo "$filename" | sed -E 's/luci-app-passwall_([0-9.]+-[0-9a-zA-Z_.]+)_all\.ipk/\1/')
                         fi
                       fi
                     fi
-                    ;;
-                  Packages*)
-                    # 索引文件族绝对不缓存，强制全量拉取
-                    curl -fsL -R -O --output-dir "$LOCAL_DIR" "https://downloads.sourceforge.net/project/openwrt-passwall-build/releases/$v/$ARCH/$d/$filename" --retry 3 || true
-                    ;;
-                  *)
-                    curl -fsL -R -O -z "$LOCAL_FILE" --output-dir "$LOCAL_DIR" "https://downloads.sourceforge.net/project/openwrt-passwall-build/releases/$v/$ARCH/$d/$filename" --retry 3 || true
-                    ;;
-                esac
-              done
-              
-              # 清理远端已删除的孤儿文件
-              if [ -n "$REMOTE_FILES" ]; then
-                for local_file in "$LOCAL_DIR"/*; do
-                  [ -e "$local_file" ] || continue
-                  fname=$(basename "$local_file")
-                  if [[ ! "$fname" == .* ]] && ! echo "$REMOTE_FILES" | grep -q "^$fname$"; then
-                    rm -f "$local_file"
                   fi
-                done
-              fi
+                fi
+              done
             done
           done
           
           # =======================================================
-          # 🩹 动态修补 21.02：无缝借用 23.05 的强劲核心组件
+          # 🩹 动态修补 21.02：安全借用 23.05 核心组件
           # =======================================================
           WORKSPACE=$PWD
           DIR_2102="$WORKSPACE/packages-21.02/$ARCH/passwall_packages"
@@ -154,7 +133,7 @@ jobs:
             cd "$WORKSPACE"
           fi
           
-          # 注入版本号日志
+          # 日志注入
           if [ -n "$LATEST_VERSION_STR" ]; then
             sed -i "1a \\" "$LOG_FILE"
             sed -i "2i > 🚀 **当前一键包内 Passwall 核心版本: \`${LATEST_VERSION_STR}\`**" "$LOG_FILE"
@@ -235,7 +214,6 @@ jobs:
           list_2=("luci-compat" "luci-app-passwall" "luci-i18n-passwall-zh-cn" "tcping" "chinadns-ng" "dns2socks" "microsocks" "xray-core" "unzip")
           list_n=("luci-compat" "luci-app-passwall" "luci-i18n-passwall-zh-cn" "tcping" "chinadns-ng" "dns2socks" "microsocks" "xray-core" "sing-box" "unzip")
           
-          # 打包 .run（同样去掉了 22.03）
           create_run "packages-21.02" "21.02" "${list_2[@]}"
           create_run "packages-23.05" "23.05" "${list_n[@]}"
           create_run "packages-24.10" "24.10" "${list_n[@]}"
