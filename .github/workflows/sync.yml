@@ -1,4 +1,4 @@
-name: Sync and Mixed Build Files全量拉取
+name: Sync and Mixed Build Files清爽带链接
 
 on:
   schedule:
@@ -15,11 +15,9 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # 提前安装必需的解包依赖
       - name: Install Dependencies
         run: sudo apt-get update && sudo apt-get install -y zstd xz-utils curl jq
 
-      # 检出上次同步的网页端状态（仅用于生成更新日志比对，绝对不参与实际文件混合）
       - name: Checkout Previous State
         uses: actions/checkout@v4
         with:
@@ -33,7 +31,6 @@ jobs:
           BEIJING_TIME=$(TZ='Asia/Shanghai' date +'%Y-%m-%d %H:%M')
           echo "REPORT_DATE=$BEIJING_TIME" >> $GITHUB_ENV
           
-          # 💡 彻底去掉 22.03 的同步
           VERSIONS=("packages-24.10" "packages-23.05" "packages-21.02")
           DIRS=("passwall_packages" "passwall2" "passwall_luci")
           ARCH="aarch64_cortex-a53"
@@ -43,7 +40,7 @@ jobs:
           MAIN_UPDATED=false
           LATEST_VERSION_STR=""
           
-          # 💡 100% 强行全量拉取，从物理根源上断绝索引与实体包错配的可能！
+          # 100% 强行全量拉取，杜绝哈希错配
           for v in "${VERSIONS[@]}"; do
             for d in "${DIRS[@]}"; do
               LOCAL_DIR="$v/$ARCH/$d"
@@ -56,16 +53,13 @@ jobs:
                 LOCAL_FILE="$LOCAL_DIR/$filename"
                 OLD_STATE_FILE="old_state/$LOCAL_DIR/$filename"
                 
-                # 无脑强行全量下载，坚决不用 -z
                 curl -fsL -R -O --output-dir "$LOCAL_DIR" "https://downloads.sourceforge.net/project/openwrt-passwall-build/releases/$v/$ARCH/$d/$filename" --retry 3 || true
                 
                 if [[ "$filename" == *.ipk ]]; then
                   if [ -f "$LOCAL_FILE" ]; then
-                    # 防御性编程：如果下载到了 SourceForge 的 404 报错页，直接干掉
                     if [ $(wc -c < "$LOCAL_FILE") -lt 2048 ]; then
                       rm -f "$LOCAL_FILE"
                     else
-                      # 正常文件比对以生成日志
                       NEW_HASH=$(md5sum "$LOCAL_FILE" | cut -d' ' -f1)
                       [ -f "$OLD_STATE_FILE" ] && OLD_HASH=$(md5sum "$OLD_STATE_FILE" | cut -d' ' -f1) || OLD_HASH="none"
                       
@@ -85,9 +79,7 @@ jobs:
             done
           done
           
-          # =======================================================
           # 🩹 动态修补 21.02：无缝借用 23.05 的强劲核心组件
-          # =======================================================
           WORKSPACE=$PWD
           DIR_2102="$WORKSPACE/packages-21.02/$ARCH/passwall_packages"
           DIR_2305="$WORKSPACE/packages-23.05/$ARCH/passwall_packages"
@@ -103,7 +95,6 @@ jobs:
                   
                   if [ -f "Packages.gz" ]; then
                     gunzip -k Packages.gz || true
-                    
                     mkdir -p /tmp/pkg_extract
                     tar -xf "$FNAME" -C /tmp/pkg_extract 2>/dev/null || true
                     
@@ -116,7 +107,6 @@ jobs:
                     fi
                     
                     rm -rf /tmp/pkg_extract
-                    
                     echo "Filename: $FNAME" >> Packages
                     echo "Size: $(stat -c%s "$FNAME")" >> Packages
                     echo "SHA256sum: $(sha256sum "$FNAME" | awk '{print $1}')" >> Packages
@@ -130,10 +120,10 @@ jobs:
           fi
           
           # =======================================================
-          # 📝 修复版日志重塑逻辑（绝不动用 sed，100%无报错风险）
+          # 📝 精准重塑极简日志逻辑 (0报错推演版)
           # =======================================================
           TMP_LOG="/tmp/update_log.tmp"
-          echo "### 📦 软件源更新状态 ($BEIJING_TIME)" > "$TMP_LOG"
+          echo "### 📦 软件源状态更新 ($BEIJING_TIME)" > "$TMP_LOG"
           echo "" >> "$TMP_LOG"
           
           if [ "$MAIN_UPDATED" = "true" ] && [ -n "$LATEST_VERSION_STR" ]; then
@@ -144,11 +134,12 @@ jobs:
             CURRENT_FILE=$(find packages-24.10/$ARCH -type f -name "luci-app-passwall_*.ipk" 2>/dev/null | head -n 1 || true)
             if [ -n "$CURRENT_FILE" ]; then
               CUR_VER=$(basename "$CURRENT_FILE" | sed -E 's/luci-app-passwall_([0-9.]+-[0-9a-zA-Z_.]+)_all\.ipk/\1/')
-              echo "> ℹ️ **当前组件库稳定维护中 | 核心版本: \`${CUR_VER}\`**" >> "$TMP_LOG"
+              echo "> ℹ️ **当前稳定运行维护中 | 核心版本: \`${CUR_VER}\`**" >> "$TMP_LOG"
               echo "" >> "$TMP_LOG"
             fi
-            echo "- ℹ️ 今日无主程序升级，全量依赖库已自动完成一致性校验。" >> "$TMP_LOG"
+            echo "- ℹ️ 今日无主程序更新，依赖组件包自动完成全量一致性校验。" >> "$TMP_LOG"
           fi
+          
           mv "$TMP_LOG" "$LOG_FILE"
           echo "MAIN_UPDATED=$MAIN_UPDATED" >> $GITHUB_ENV
 
@@ -215,31 +206,33 @@ jobs:
           create_run "packages-23.05" "23.05" "${list_n[@]}"
           create_run "packages-24.10" "24.10" "${list_n[@]}"
 
-      # 💡 核心功能：全自动生成专属备忘录（移除了已弃用的 22.03）
+      # =======================================================
+      # 📝 核心：生成短连接专属备忘录 my.txt
+      # =======================================================
       - name: Generate Secret Memo
         run: |
           mkdir -p web_root
           cat << 'EOF' > web_root/my.txt
           ==================================================
-          🔒 个人专属自定义源配置备忘录 (请勿外传)
+          🔒 个人专属自建源配置备忘录 (CF Worker 加速纯净版)
           ==================================================
 
           【🌐 路由器适用：OpenWrt 21.02 分支】
-          src/gz custom_pw_packages https://git.dawu.de5.net/gh-pages/packages-21.02/aarch64_cortex-a53/passwall_packages
-          src/gz custom_pw_packages2 https://git.dawu.de5.net/gh-pages/packages-21.02/aarch64_cortex-a53/passwall2
-          src/gz custom_pw_luci https://git.dawu.de5.net/gh-pages/packages-21.02/aarch64_cortex-a53/passwall_luci
+          src/gz custom_pw_packages https://git.dawu.de5.net/packages-21.02/aarch64_cortex-a53/passwall_packages
+          src/gz custom_pw_packages2 https://git.dawu.de5.net/packages-21.02/aarch64_cortex-a53/passwall2
+          src/gz custom_pw_luci https://git.dawu.de5.net/packages-21.02/aarch64_cortex-a53/passwall_luci
 
           【🌐 路由器适用：OpenWrt 23.05 分支】
-          src/gz custom_pw_packages https://git.dawu.de5.net/gh-pages/packages-23.05/aarch64_cortex-a53/passwall_packages
-          src/gz custom_pw_packages2 https://git.dawu.de5.net/gh-pages/packages-23.05/aarch64_cortex-a53/passwall2
-          src/gz custom_pw_luci https://git.dawu.de5.net/gh-pages/packages-23.05/aarch64_cortex-a53/passwall_luci
+          src/gz custom_pw_packages https://git.dawu.de5.net/packages-23.05/aarch64_cortex-a53/passwall_packages
+          src/gz custom_pw_packages2 https://git.dawu.de5.net/packages-23.05/aarch64_cortex-a53/passwall2
+          src/gz custom_pw_luci https://git.dawu.de5.net/packages-23.05/aarch64_cortex-a53/passwall_luci
 
           【🌐 路由器适用：OpenWrt 24.10 分支】
-          src/gz custom_pw_packages https://git.dawu.de5.net/gh-pages/packages-24.10/aarch64_cortex-a53/passwall_packages
-          src/gz custom_pw_packages2 https://git.dawu.de5.net/gh-pages/packages-24.10/aarch64_cortex-a53/passwall2
-          src/gz custom_pw_luci https://git.dawu.de5.net/gh-pages/packages-24.10/aarch64_cortex-a53/passwall_luci
+          src/gz custom_pw_packages https://git.dawu.de5.net/packages-24.10/aarch64_cortex-a53/passwall_packages
+          src/gz custom_pw_packages2 https://git.dawu.de5.net/packages-24.10/aarch64_cortex-a53/passwall2
+          src/gz custom_pw_luci https://git.dawu.de5.net/packages-24.10/aarch64_cortex-a53/passwall_luci
 
-          【⚡ 附：路由器端 opkg 强力缓存清理命令】
+          【⚡ 清理强缓存命令】
           rm -rf /var/opkg-lists/* && opkg update
           ==================================================
           EOF
@@ -262,7 +255,7 @@ jobs:
               echo "<div>DIR: <a href='$name/index.html'>$name/</a></div>" >> "$index_file"
             done
             
-            # 💡 核心除错处理：添加 -not -name "my.txt"，使其在生成的网页 HTML 文件列表中彻底隐身
+            # 💡 核心除错处理：网页索引生成时完全无视 my.txt，实现潜行效果！
             find "$dir" -maxdepth 1 -type f -not -name "index.html" -not -name "my.txt" -not -path '*/.*' | sort | while read -r file; do
               local name=$(basename "$file")
               echo "<div>FILE: <a href='$name'>$name</a></div>" >> "$index_file"
