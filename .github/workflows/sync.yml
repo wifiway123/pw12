@@ -1,4 +1,4 @@
-name: Sync and Mixed Build Files 去掉23.02版本
+name: Sync and Mixed Build Files 去掉22.03版本
 
 on:
   schedule:
