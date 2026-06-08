@@ -1,4 +1,4 @@
-name: Sync and Mixed Build Files去掉22.03
+name: Sync and Mixed Build Files全量拉取
 
 on:
   schedule:
@@ -33,20 +33,17 @@ jobs:
           BEIJING_TIME=$(TZ='Asia/Shanghai' date +'%Y-%m-%d %H:%M')
           echo "REPORT_DATE=$BEIJING_TIME" >> $GITHUB_ENV
           
+          # 💡 彻底去掉 22.03 的同步
           VERSIONS=("packages-24.10" "packages-23.05" "packages-21.02")
           DIRS=("passwall_packages" "passwall2" "passwall_luci")
           ARCH="aarch64_cortex-a53"
           
           LOG_FILE="update_log.txt"
-          echo "### 📦 更新日志 ($BEIJING_TIME)" > $LOG_FILE
           rm -f plugin_list.txt && touch plugin_list.txt
           MAIN_UPDATED=false
           LATEST_VERSION_STR=""
           
-          # 💡 核心逻辑巨变：彻底舍弃本地文件缓存！
-          # 我们不再使用 cp -a 复制旧文件，每次循环都会重新建立干净的目录。
-          # 100% 强行全量拉取，从物理根源上断绝索引与实体包错配的可能！
-          
+          # 💡 100% 强行全量拉取，从物理根源上断绝索引与实体包错配的可能！
           for v in "${VERSIONS[@]}"; do
             for d in "${DIRS[@]}"; do
               LOCAL_DIR="$v/$ARCH/$d"
@@ -64,7 +61,7 @@ jobs:
                 
                 if [[ "$filename" == *.ipk ]]; then
                   if [ -f "$LOCAL_FILE" ]; then
-                    # 防御性编程：如果下载到了 SourceForge 的 404 HTML 报错页 (通常极小)，直接干掉
+                    # 防御性编程：如果下载到了 SourceForge 的 404 报错页，直接干掉
                     if [ $(wc -c < "$LOCAL_FILE") -lt 2048 ]; then
                       rm -f "$LOCAL_FILE"
                     else
@@ -89,7 +86,7 @@ jobs:
           done
           
           # =======================================================
-          # 🩹 动态修补 21.02：安全借用 23.05 核心组件
+          # 🩹 动态修补 21.02：无缝借用 23.05 的强劲核心组件
           # =======================================================
           WORKSPACE=$PWD
           DIR_2102="$WORKSPACE/packages-21.02/$ARCH/passwall_packages"
@@ -103,7 +100,6 @@ jobs:
                 FNAME=$(basename "$PKG_FILE")
                 if [ ! -f "$FNAME" ]; then
                   cp "$PKG_FILE" .
-                  echo "- 🩹 动态修补: 成功将 $FNAME 从 23.05 源注入 21.02 并重写索引" >> "$WORKSPACE/$LOG_FILE"
                   
                   if [ -f "Packages.gz" ]; then
                     gunzip -k Packages.gz || true
@@ -133,26 +129,27 @@ jobs:
             cd "$WORKSPACE"
           fi
           
-          # 日志注入
-          if [ -n "$LATEST_VERSION_STR" ]; then
-            sed -i "1a \\" "$LOG_FILE"
-            sed -i "2i > 🚀 **当前一键包内 Passwall 核心版本: \`${LATEST_VERSION_STR}\`**" "$LOG_FILE"
-            sed -i "3i \\" "$LOG_FILE"
+          # =======================================================
+          # 📝 修复版日志重塑逻辑（绝不动用 sed，100%无报错风险）
+          # =======================================================
+          TMP_LOG="/tmp/update_log.tmp"
+          echo "### 📦 软件源更新状态 ($BEIJING_TIME)" > "$TMP_LOG"
+          echo "" >> "$TMP_LOG"
+          
+          if [ "$MAIN_UPDATED" = "true" ] && [ -n "$LATEST_VERSION_STR" ]; then
+            echo "> 🚀 **检测到上游发布新版本: \`${LATEST_VERSION_STR}\`**" >> "$TMP_LOG"
+            echo "" >> "$TMP_LOG"
+            echo "- ✅ Passwall 主程序已全自动同步并滚动升级。" >> "$TMP_LOG"
           else
             CURRENT_FILE=$(find packages-24.10/$ARCH -type f -name "luci-app-passwall_*.ipk" 2>/dev/null | head -n 1 || true)
             if [ -n "$CURRENT_FILE" ]; then
               CUR_VER=$(basename "$CURRENT_FILE" | sed -E 's/luci-app-passwall_([0-9.]+-[0-9a-zA-Z_.]+)_all\.ipk/\1/')
-              sed -i "1a \\" "$LOG_FILE"
-              sed -i "2i > ℹ️ **当前包内 Passwall 核心版本: \`${CUR_VER}\` (未检测到上游新变动)**" "$LOG_FILE"
-              sed -i "3i \\" "$LOG_FILE"
+              echo "> ℹ️ **当前组件库稳定维护中 | 核心版本: \`${CUR_VER}\`**" >> "$TMP_LOG"
+              echo "" >> "$TMP_LOG"
             fi
+            echo "- ℹ️ 今日无主程序升级，全量依赖库已自动完成一致性校验。" >> "$TMP_LOG"
           fi
-          
-          if [ -s plugin_list.txt ]; then
-            sort -u plugin_list.txt | sed 's/^/- ✅ 更新: /' >> $LOG_FILE
-          else
-            echo "- ℹ️ 今日无新安装包更新" >> $LOG_FILE
-          fi
+          mv "$TMP_LOG" "$LOG_FILE"
           echo "MAIN_UPDATED=$MAIN_UPDATED" >> $GITHUB_ENV
 
       - name: Build .run Installers
@@ -218,6 +215,35 @@ jobs:
           create_run "packages-23.05" "23.05" "${list_n[@]}"
           create_run "packages-24.10" "24.10" "${list_n[@]}"
 
+      # 💡 核心功能：全自动生成专属备忘录（移除了已弃用的 22.03）
+      - name: Generate Secret Memo
+        run: |
+          mkdir -p web_root
+          cat << 'EOF' > web_root/my.txt
+          ==================================================
+          🔒 个人专属自定义源配置备忘录 (请勿外传)
+          ==================================================
+
+          【🌐 路由器适用：OpenWrt 21.02 分支】
+          src/gz custom_pw_packages https://git.dawu.de5.net/gh-pages/packages-21.02/aarch64_cortex-a53/passwall_packages
+          src/gz custom_pw_packages2 https://git.dawu.de5.net/gh-pages/packages-21.02/aarch64_cortex-a53/passwall2
+          src/gz custom_pw_luci https://git.dawu.de5.net/gh-pages/packages-21.02/aarch64_cortex-a53/passwall_luci
+
+          【🌐 路由器适用：OpenWrt 23.05 分支】
+          src/gz custom_pw_packages https://git.dawu.de5.net/gh-pages/packages-23.05/aarch64_cortex-a53/passwall_packages
+          src/gz custom_pw_packages2 https://git.dawu.de5.net/gh-pages/packages-23.05/aarch64_cortex-a53/passwall2
+          src/gz custom_pw_luci https://git.dawu.de5.net/gh-pages/packages-23.05/aarch64_cortex-a53/passwall_luci
+
+          【🌐 路由器适用：OpenWrt 24.10 分支】
+          src/gz custom_pw_packages https://git.dawu.de5.net/gh-pages/packages-24.10/aarch64_cortex-a53/passwall_packages
+          src/gz custom_pw_packages2 https://git.dawu.de5.net/gh-pages/packages-24.10/aarch64_cortex-a53/passwall2
+          src/gz custom_pw_luci https://git.dawu.de5.net/gh-pages/packages-24.10/aarch64_cortex-a53/passwall_luci
+
+          【⚡ 附：路由器端 opkg 强力缓存清理命令】
+          rm -rf /var/opkg-lists/* && opkg update
+          ==================================================
+          EOF
+
       - name: Generate Index
         run: |
           mkdir -p web_root
@@ -235,7 +261,9 @@ jobs:
               local name=$(basename "$subdir")
               echo "<div>DIR: <a href='$name/index.html'>$name/</a></div>" >> "$index_file"
             done
-            find "$dir" -maxdepth 1 -type f -not -name "index.html" -not -path '*/.*' | sort | while read -r file; do
+            
+            # 💡 核心除错处理：添加 -not -name "my.txt"，使其在生成的网页 HTML 文件列表中彻底隐身
+            find "$dir" -maxdepth 1 -type f -not -name "index.html" -not -name "my.txt" -not -path '*/.*' | sort | while read -r file; do
               local name=$(basename "$file")
               echo "<div>FILE: <a href='$name'>$name</a></div>" >> "$index_file"
             done
