@@ -1,4 +1,4 @@
-name: Sync and Mixed Build Files
+name: Sync and Mixed Build Files去掉22.03
 
 on:
   schedule:
