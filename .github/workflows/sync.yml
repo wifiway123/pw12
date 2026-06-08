@@ -33,7 +33,7 @@ jobs:
           BEIJING_TIME=$(TZ='Asia/Shanghai' date +'%Y-%m-%d %H:%M')
           echo "REPORT_DATE=$BEIJING_TIME" >> $GITHUB_ENV
           
-          VERSIONS=("packages-24.10" "packages-23.05" "packages-22.03" "packages-21.02")
+          VERSIONS=("packages-24.10" "packages-23.05" "packages-21.02")
           DIRS=("passwall_packages" "passwall2" "passwall_luci")
           ARCH="aarch64_cortex-a53"
           
@@ -43,9 +43,9 @@ jobs:
           MAIN_UPDATED=false
           LATEST_VERSION_STR=""
           
-          # 💡 核心修复 2：将上次的旧文件拷贝到当前工作区作为缓存，让 curl -z 真正起效，拒绝重复下载！
+          # 💡 核心修复 1：使用 cp -a 替代 cp -r，严格保留历史文件的原始时间戳！
           if [ -d "old_state" ]; then
-            cp -r old_state/packages-* . 2>/dev/null || true
+            cp -a old_state/packages-* . 2>/dev/null || true
           fi
           
           for v in "${VERSIONS[@]}"; do
@@ -82,6 +82,10 @@ jobs:
                       fi
                     fi
                     ;;
+                  Packages*)
+                    # 💡 核心修复 2：对于 Packages 索引文件族，绝对不使用 -z 跳过，强制全量拉取！
+                    curl -fsL -R -O --output-dir "$LOCAL_DIR" "https://downloads.sourceforge.net/project/openwrt-passwall-build/releases/$v/$ARCH/$d/$filename" --retry 3 || true
+                    ;;
                   *)
                     curl -fsL -R -O -z "$LOCAL_FILE" --output-dir "$LOCAL_DIR" "https://downloads.sourceforge.net/project/openwrt-passwall-build/releases/$v/$ARCH/$d/$filename" --retry 3 || true
                     ;;
@@ -106,12 +110,12 @@ jobs:
           # =======================================================
           WORKSPACE=$PWD
           DIR_2102="$WORKSPACE/packages-21.02/$ARCH/passwall_packages"
-          DIR_2203="$WORKSPACE/packages-22.03/$ARCH/passwall_packages"
+          DIR_2305="$WORKSPACE/packages-23.05/$ARCH/passwall_packages"
           
-          if [ -d "$DIR_2102" ] && [ -d "$DIR_2203" ]; then
+          if [ -d "$DIR_2102" ] && [ -d "$DIR_2305" ]; then
             cd "$DIR_2102"
             for borrow_pkg in "xray-core" "sing-box"; do
-              PKG_FILE=$(ls "$DIR_2203"/${borrow_pkg}_*.ipk 2>/dev/null | head -n 1)
+              PKG_FILE=$(ls "$DIR_2305"/${borrow_pkg}_*.ipk 2>/dev/null | head -n 1)
               if [ -n "$PKG_FILE" ]; then
                 FNAME=$(basename "$PKG_FILE")
                 if [ ! -f "$FNAME" ]; then
@@ -121,7 +125,6 @@ jobs:
                   if [ -f "Packages.gz" ]; then
                     gunzip -k Packages.gz || true
                     
-                    # 💡 核心修复 1：智能解压提取 control 信息，兼容所有现代 OpenWrt 压缩标准
                     mkdir -p /tmp/pkg_extract
                     tar -xf "$FNAME" -C /tmp/pkg_extract 2>/dev/null || true
                     
