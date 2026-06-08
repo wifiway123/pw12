@@ -1,4 +1,4 @@
-name: Sync and Mixed Build Files
+name: Sync and Mixed Build Files 去掉23.02版本
 
 on:
   schedule:
@@ -33,6 +33,7 @@ jobs:
           BEIJING_TIME=$(TZ='Asia/Shanghai' date +'%Y-%m-%d %H:%M')
           echo "REPORT_DATE=$BEIJING_TIME" >> $GITHUB_ENV
           
+          # 💡 彻底去掉 22.03 的同步
           VERSIONS=("packages-24.10" "packages-23.05" "packages-21.02")
           DIRS=("passwall_packages" "passwall2" "passwall_luci")
           ARCH="aarch64_cortex-a53"
@@ -43,9 +44,12 @@ jobs:
           MAIN_UPDATED=false
           LATEST_VERSION_STR=""
           
-          # 💡 核心修复 1：使用 cp -a 替代 cp -r，严格保留历史文件的原始时间戳！
+          # 💡 核心防幽灵机制：只将目前还在 VERSIONS 列表里的版本拷贝过来作为缓存！
+          # 这样旧的 22.03 就会被彻底留在历史中，不会复活。
           if [ -d "old_state" ]; then
-            cp -a old_state/packages-* . 2>/dev/null || true
+            for v in "${VERSIONS[@]}"; do
+              [ -d "old_state/$v" ] && cp -a "old_state/$v" .
+            done
           fi
           
           for v in "${VERSIONS[@]}"; do
@@ -83,7 +87,7 @@ jobs:
                     fi
                     ;;
                   Packages*)
-                    # 💡 核心修复 2：对于 Packages 索引文件族，绝对不使用 -z 跳过，强制全量拉取！
+                    # 索引文件族绝对不缓存，强制全量拉取
                     curl -fsL -R -O --output-dir "$LOCAL_DIR" "https://downloads.sourceforge.net/project/openwrt-passwall-build/releases/$v/$ARCH/$d/$filename" --retry 3 || true
                     ;;
                   *)
@@ -106,7 +110,7 @@ jobs:
           done
           
           # =======================================================
-          # 🩹 动态修补 21.02：全兼容 ZSTD/XZ/GZ 解压嗅探器
+          # 🩹 动态修补 21.02：无缝借用 23.05 的强劲核心组件
           # =======================================================
           WORKSPACE=$PWD
           DIR_2102="$WORKSPACE/packages-21.02/$ARCH/passwall_packages"
@@ -120,7 +124,7 @@ jobs:
                 FNAME=$(basename "$PKG_FILE")
                 if [ ! -f "$FNAME" ]; then
                   cp "$PKG_FILE" .
-                  echo "- 🩹 动态修补: 成功将 $FNAME 注入 21.02 源并重写索引" >> "$WORKSPACE/$LOG_FILE"
+                  echo "- 🩹 动态修补: 成功将 $FNAME 从 23.05 源注入 21.02 并重写索引" >> "$WORKSPACE/$LOG_FILE"
                   
                   if [ -f "Packages.gz" ]; then
                     gunzip -k Packages.gz || true
@@ -231,6 +235,7 @@ jobs:
           list_2=("luci-compat" "luci-app-passwall" "luci-i18n-passwall-zh-cn" "tcping" "chinadns-ng" "dns2socks" "microsocks" "xray-core" "unzip")
           list_n=("luci-compat" "luci-app-passwall" "luci-i18n-passwall-zh-cn" "tcping" "chinadns-ng" "dns2socks" "microsocks" "xray-core" "sing-box" "unzip")
           
+          # 打包 .run（同样去掉了 22.03）
           create_run "packages-21.02" "21.02" "${list_2[@]}"
           create_run "packages-23.05" "23.05" "${list_n[@]}"
           create_run "packages-24.10" "24.10" "${list_n[@]}"
