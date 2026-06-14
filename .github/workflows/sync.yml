@@ -158,7 +158,7 @@ jobs:
             mkdir -p "$tmp_dir"
             for pkg in "${pkgs[@]}"; do
               found=$(find "$source_ver/$ARCH" -type f -name "${pkg}_*.ipk" 2>/dev/null | head -n 1 || true)
-              # 💡 变更 1：剥离 xray-core，仅保留对 sing-box 的大小判定
+              # 仅保留对 sing-box 的体积锁定
               if [ -n "$found" ] && [ "$pkg" = "sing-box" ]; then
                 [ $(wc -c < "$found") -lt 1000000 ] && found=""
               fi
@@ -187,7 +187,7 @@ jobs:
             
             echo "#!/bin/sh" > "$tmp_dir/install.sh"
             
-            # 💡 恢复 23.05 离线安装的专属架构注入
+            # 💡 仅针对 23.05 注入临时架构权重
             if [ "$target_ver" = "23.05" ]; then
               echo "cp /etc/opkg.conf /etc/opkg.conf.bak" >> "$tmp_dir/install.sh"
               echo "echo 'arch all 1' >> /etc/opkg.conf" >> "$tmp_dir/install.sh"
@@ -198,7 +198,7 @@ jobs:
             
             echo "opkg update && opkg install *.ipk" >> "$tmp_dir/install.sh"
             
-            # 💡 安装完成后 23.05 恢复原配置
+            # 💡 安装完成后，仅 23.05 执行配置还原
             if [ "$target_ver" = "23.05" ]; then
               echo "mv /etc/opkg.conf.bak /etc/opkg.conf" >> "$tmp_dir/install.sh"
             fi
@@ -217,7 +217,7 @@ jobs:
             rm -rf "run_tmp_$target_ver"
           }
           
-          # 💡 变更 2：原有的 list_2 和 list_n 全部替换为 sing-box，抛弃 xray-core
+          # 全部替换为 sing-box
           list_2=("luci-compat" "luci-app-passwall" "luci-i18n-passwall-zh-cn" "tcping" "chinadns-ng" "dns2socks" "microsocks" "sing-box" "unzip")
           list_n=("luci-compat" "luci-app-passwall" "luci-i18n-passwall-zh-cn" "tcping" "chinadns-ng" "dns2socks" "microsocks" "sing-box" "unzip")
           
@@ -274,7 +274,7 @@ jobs:
               echo "<div>DIR: <a href='$name/index.html'>$name/</a></div>" >> "$index_file"
             done
             
-            # 💡 核心除错处理：网页索引生成时完全无视 my.txt，实现潜行效果！
+            # 网页索引生成时完全无视 my.txt，实现潜行效果！
             find "$dir" -maxdepth 1 -type f -not -name "index.html" -not -name "my.txt" -not -path '*/.*' | sort | while read -r file; do
               local name=$(basename "$file")
               echo "<div>FILE: <a href='$name'>$name</a></div>" >> "$index_file"
