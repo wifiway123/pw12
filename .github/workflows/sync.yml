@@ -157,12 +157,13 @@ jobs:
             local tmp_dir="run_tmp_$target_ver/passwall_install_tmp"
             mkdir -p "$tmp_dir"
             for pkg in "${pkgs[@]}"; do
-              found=$(find "$source_ver/$ARCH" -type f -name "${pkg}_*.ipk" 2>/dev/null | head -n 1 || true)
-              if [ -n "$found" ] && { [ "$pkg" = "sing-box" ] || [ "$pkg" = "xray-core" ]; }; then
+              # 精准提取最高版本新包，拒绝盲盒抓错
+              found=$(find "$source_ver/$ARCH" -type f -name "${pkg}_*.ipk" 2>/dev/null | sort -V | tail -n 1 || true)
+              if [ -n "$found" ] && [ "$pkg" = "sing-box" ]; then
                 [ $(wc -c < "$found") -lt 1000000 ] && found=""
               fi
               if [ -z "$found" ]; then
-                found=$(find packages-*/$ARCH -type f -name "${pkg}_*.ipk" -size +2k 2>/dev/null | head -n 1 || true)
+                found=$(find packages-*/$ARCH -type f -name "${pkg}_*.ipk" -size +2k 2>/dev/null | sort -V | tail -n 1 || true)
               fi
               if [ -n "$found" ] && [ -f "$found" ]; then
                 cp "$found" "$tmp_dir/"
@@ -183,8 +184,11 @@ jobs:
                 fi
               fi
             done
+            
+            # 💡 原逻辑还原：恢复 && 强关联，确保能拉到官方源依赖时才执行安装
             echo "#!/bin/sh" > "$tmp_dir/install.sh"
             echo "opkg update && opkg install *.ipk" >> "$tmp_dir/install.sh"
+            
             cat << 'EOF' > "run_output/install_passwall_${target_ver}.run"
           #!/bin/sh
           ARCHIVE=$(awk '/^__ARCHIVE_BELOW__/ {print NR + 1; exit 0; }' "$0")
@@ -199,12 +203,12 @@ jobs:
             rm -rf "run_tmp_$target_ver"
           }
           
-          list_2=("luci-compat" "luci-app-passwall" "luci-i18n-passwall-zh-cn" "tcping" "chinadns-ng" "dns2socks" "microsocks" "xray-core" "unzip")
-          list_n=("luci-compat" "luci-app-passwall" "luci-i18n-passwall-zh-cn" "tcping" "chinadns-ng" "dns2socks" "microsocks" "xray-core" "sing-box" "unzip")
+          # 全系拥抱 sing-box 抛弃 xray-core 的极简依赖数组
+          list_pkgs=("luci-compat" "luci-app-passwall" "luci-i18n-passwall-zh-cn" "tcping" "chinadns-ng" "dns2socks" "microsocks" "sing-box" "unzip")
           
-          create_run "packages-21.02" "21.02" "${list_2[@]}"
-          create_run "packages-23.05" "23.05" "${list_n[@]}"
-          create_run "packages-24.10" "24.10" "${list_n[@]}"
+          create_run "packages-21.02" "21.02" "${list_pkgs[@]}"
+          create_run "packages-23.05" "23.05" "${list_pkgs[@]}"
+          create_run "packages-24.10" "24.10" "${list_pkgs[@]}"
 
       # =======================================================
       # 📝 核心：生成短连接专属备忘录 my.txt
@@ -255,7 +259,7 @@ jobs:
               echo "<div>DIR: <a href='$name/index.html'>$name/</a></div>" >> "$index_file"
             done
             
-            # 💡 核心除错处理：网页索引生成时完全无视 my.txt，实现潜行效果！
+            # 网页索引生成时完全无视 my.txt，实现潜行效果！
             find "$dir" -maxdepth 1 -type f -not -name "index.html" -not -name "my.txt" -not -path '*/.*' | sort | while read -r file; do
               local name=$(basename "$file")
               echo "<div>FILE: <a href='$name'>$name</a></div>" >> "$index_file"
