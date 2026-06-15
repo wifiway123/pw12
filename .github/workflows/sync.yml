@@ -1,4 +1,4 @@
-name: Sync and Mixed Build Files清爽带链接
+name: Sync and Mixed Build Files双轨打包
 
 on:
   schedule:
@@ -120,7 +120,7 @@ jobs:
           fi
           
           # =======================================================
-          # 📝 精准重塑极简日志逻辑 (0报错推演版)
+          # 📝 精准重塑极简日志逻辑
           # =======================================================
           TMP_LOG="/tmp/update_log.tmp"
           echo "### 📦 软件源状态更新 ($BEIJING_TIME)" > "$TMP_LOG"
@@ -149,23 +149,28 @@ jobs:
           mkdir -p run_output
           ARCH="aarch64_cortex-a53"
           
+          # 💡 修改后的打包函数：增加第3个参数 "suffix" 用于区分文件名
           create_run() {
             local source_ver=$1
             local target_ver=$2
-            shift 2
+            local suffix=$3
+            shift 3
             local pkgs=("$@")
-            local tmp_dir="run_tmp_$target_ver/passwall_install_tmp"
+            
+            local tmp_dir="run_tmp_${target_ver}${suffix}/passwall_install_tmp"
             mkdir -p "$tmp_dir"
+            
             for pkg in "${pkgs[@]}"; do
-              # 💡 仅修改了此处：使用 sort -V | tail -n 1 解决盲抓
+              # 解决盲抓保底策略：精准版本排序
               found=$(find "$source_ver/$ARCH" -type f -name "${pkg}_*.ipk" 2>/dev/null | sort -V | tail -n 1 || true)
-              if [ -n "$found" ] && { [ "$pkg" = "sing-box" ] || [ "$pkg" = "xray-core" ]; }; then
+              # 体积锁定防错
+              if [ -n "$found" ] && [ "$pkg" = "sing-box" ]; then
                 [ $(wc -c < "$found") -lt 1000000 ] && found=""
               fi
               if [ -z "$found" ]; then
-                # 💡 仅修改了此处：使用 sort -V | tail -n 1 解决备用路径的盲抓
                 found=$(find packages-*/$ARCH -type f -name "${pkg}_*.ipk" -size +2k 2>/dev/null | sort -V | tail -n 1 || true)
               fi
+              
               if [ -n "$found" ] && [ -f "$found" ]; then
                 cp "$found" "$tmp_dir/"
                 if [ "$target_ver" = "21.02" ]; then
@@ -185,9 +190,28 @@ jobs:
                 fi
               fi
             done
+            
             echo "#!/bin/sh" > "$tmp_dir/install.sh"
+            
+            # 💡 保留：23.05 的架构注入
+            if [ "$target_ver" = "23.05" ]; then
+              echo "cp /etc/opkg.conf /etc/opkg.conf.bak" >> "$tmp_dir/install.sh"
+              echo "echo 'arch all 1' >> /etc/opkg.conf" >> "$tmp_dir/install.sh"
+              echo "echo 'arch noarch 1' >> /etc/opkg.conf" >> "$tmp_dir/install.sh"
+              echo "echo 'arch aarch64_cortex-a53 5' >> /etc/opkg.conf" >> "$tmp_dir/install.sh"
+              echo "echo 'arch aarch64_cortex-a53_neon-vfpv4 10' >> /etc/opkg.conf" >> "$tmp_dir/install.sh"
+            fi
+            
             echo "opkg update && opkg install *.ipk" >> "$tmp_dir/install.sh"
-            cat << 'EOF' > "run_output/install_passwall_${target_ver}.run"
+            
+            # 💡 保留：23.05 的洗地删除
+            if [ "$target_ver" = "23.05" ]; then
+              echo "mv /etc/opkg.conf.bak /etc/opkg.conf" >> "$tmp_dir/install.sh"
+            fi
+            
+            # 💡 动态生成带后缀的最终文件名
+            local out_name="run_output/install_passwall_${target_ver}${suffix}.run"
+            cat << 'EOF' > "$out_name"
           #!/bin/sh
           ARCHIVE=$(awk '/^__ARCHIVE_BELOW__/ {print NR + 1; exit 0; }' "$0")
           tail -n+$ARCHIVE "$0" | tar -xz -C /tmp
@@ -196,17 +220,30 @@ jobs:
           exit 0
           __ARCHIVE_BELOW__
           EOF
-            tar -czf - -C "run_tmp_$target_ver" passwall_install_tmp >> "run_output/install_passwall_${target_ver}.run"
-            chmod +x "run_output/install_passwall_${target_ver}.run"
-            rm -rf "run_tmp_$target_ver"
+            tar -czf - -C "run_tmp_${target_ver}${suffix}" passwall_install_tmp >> "$out_name"
+            chmod +x "$out_name"
+            rm -rf "run_tmp_${target_ver}${suffix}"
           }
           
-          list_2=("luci-compat" "luci-app-passwall" "luci-i18n-passwall-zh-cn" "tcping" "chinadns-ng" "dns2socks" "microsocks" "xray-core" "unzip")
-          list_n=("luci-compat" "luci-app-passwall" "luci-i18n-passwall-zh-cn" "tcping" "chinadns-ng" "dns2socks" "microsocks" "xray-core" "sing-box" "unzip")
+          # ==========================================
+          # 🛒 第一组：生成原始的常规混合版 (包含 xray)
+          # ==========================================
+          list_2_mixed=("luci-compat" "luci-app-passwall" "luci-i18n-passwall-zh-cn" "tcping" "chinadns-ng" "dns2socks" "microsocks" "xray-core" "unzip")
+          list_n_mixed=("luci-compat" "luci-app-passwall" "luci-i18n-passwall-zh-cn" "tcping" "chinadns-ng" "dns2socks" "microsocks" "xray-core" "sing-box" "unzip")
           
-          create_run "packages-21.02" "21.02" "${list_2[@]}"
-          create_run "packages-23.05" "23.05" "${list_n[@]}"
-          create_run "packages-24.10" "24.10" "${list_n[@]}"
+          create_run "packages-21.02" "21.02" "" "${list_2_mixed[@]}"
+          create_run "packages-23.05" "23.05" "" "${list_n_mixed[@]}"
+          create_run "packages-24.10" "24.10" "" "${list_n_mixed[@]}"
+
+          # ==========================================
+          # 🛒 第二组：生成专属的纯净版 (仅含 sing-box)
+          # ==========================================
+          list_singbox_only=("luci-compat" "luci-app-passwall" "luci-i18n-passwall-zh-cn" "tcping" "chinadns-ng" "dns2socks" "microsocks" "sing-box" "unzip")
+          
+          # 传入 "-singbox" 作为后缀参数
+          create_run "packages-21.02" "21.02" "-singbox" "${list_singbox_only[@]}"
+          create_run "packages-23.05" "23.05" "-singbox" "${list_singbox_only[@]}"
+          create_run "packages-24.10" "24.10" "-singbox" "${list_singbox_only[@]}"
 
       # =======================================================
       # 📝 核心：生成短连接专属备忘录 my.txt
@@ -277,6 +314,7 @@ jobs:
         run: |
           TAG_NAME="latest-a53"
           gh release delete "$TAG_NAME" --cleanup-tag -y || true
+          # 💡 这里它会自动把 run_output 目录下所有的 6 个 .run 文件一起打包发布上去！
           gh release create "$TAG_NAME" run_output/*.run --title "Passwall-A53-一键安装离线包" --notes-file update_log.txt
 
       - name: Deploy Software Feeds to GitHub Pages
