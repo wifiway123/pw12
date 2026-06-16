@@ -1,4 +1,4 @@
-name: Sync and Mixed Build Files双轨打包
+name: Sync and Mixed Build Files清爽带链接
 
 on:
   schedule:
@@ -37,7 +37,7 @@ jobs:
           
           LOG_FILE="update_log.txt"
           rm -f plugin_list.txt && touch plugin_list.txt
-          MAIN_UPDATED=false
+          ANY_UPDATED=false
           LATEST_VERSION_STR=""
           
           # 100% 强行全量拉取，杜绝哈希错配
@@ -64,11 +64,11 @@ jobs:
                       [ -f "$OLD_STATE_FILE" ] && OLD_HASH=$(md5sum "$OLD_STATE_FILE" | cut -d' ' -f1) || OLD_HASH="none"
                       
                       if [ "$OLD_HASH" != "$NEW_HASH" ]; then
+                        ANY_UPDATED=true
                         PLUGIN_NAME=$(echo "$filename" | cut -d'_' -f1)
                         echo "$PLUGIN_NAME" >> plugin_list.txt
                         
                         if [ "$PLUGIN_NAME" = "luci-app-passwall" ]; then
-                          MAIN_UPDATED=true
                           LATEST_VERSION_STR=$(echo "$filename" | sed -E 's/luci-app-passwall_([0-9.]+-[0-9a-zA-Z_.]+)_all\.ipk/\1/')
                         fi
                       fi
@@ -92,6 +92,7 @@ jobs:
                 FNAME=$(basename "$PKG_FILE")
                 if [ ! -f "$FNAME" ]; then
                   cp "$PKG_FILE" .
+                  ANY_UPDATED=true
                   
                   if [ -f "Packages.gz" ]; then
                     gunzip -k Packages.gz || true
@@ -126,7 +127,7 @@ jobs:
           echo "### 📦 软件源状态更新 ($BEIJING_TIME)" > "$TMP_LOG"
           echo "" >> "$TMP_LOG"
           
-          if [ "$MAIN_UPDATED" = "true" ] && [ -n "$LATEST_VERSION_STR" ]; then
+          if [ -n "$LATEST_VERSION_STR" ]; then
             echo "> 🚀 **检测到上游发布新版本: \`${LATEST_VERSION_STR}\`**" >> "$TMP_LOG"
             echo "" >> "$TMP_LOG"
             echo "- ✅ Passwall 主程序已全自动同步并滚动升级。" >> "$TMP_LOG"
@@ -137,19 +138,18 @@ jobs:
               echo "> ℹ️ **当前稳定运行维护中 | 核心版本: \`${CUR_VER}\`**" >> "$TMP_LOG"
               echo "" >> "$TMP_LOG"
             fi
-            echo "- ℹ️ 今日无主程序更新，依赖组件包自动完成全量一致性校验。" >> "$TMP_LOG"
+            echo "- ℹ️ 核心组件自动全量一致性校验完成，离线打包同步刷新。" >> "$TMP_LOG"
           fi
           
           mv "$TMP_LOG" "$LOG_FILE"
-          echo "MAIN_UPDATED=$MAIN_UPDATED" >> $GITHUB_ENV
+          echo "ANY_UPDATED=$ANY_UPDATED" >> $GITHUB_ENV
 
       - name: Build .run Installers
-        if: env.MAIN_UPDATED == 'true' || github.event_name == 'workflow_dispatch'
+        if: env.ANY_UPDATED == 'true' || github.event_name == 'workflow_dispatch'
         run: |
           mkdir -p run_output
           ARCH="aarch64_cortex-a53"
           
-          # 💡 修改后的打包函数：增加第3个参数 "suffix" 用于区分文件名
           create_run() {
             local source_ver=$1
             local target_ver=$2
@@ -161,9 +161,7 @@ jobs:
             mkdir -p "$tmp_dir"
             
             for pkg in "${pkgs[@]}"; do
-              # 解决盲抓保底策略：精准版本排序
               found=$(find "$source_ver/$ARCH" -type f -name "${pkg}_*.ipk" 2>/dev/null | sort -V | tail -n 1 || true)
-              # 体积锁定防错
               if [ -n "$found" ] && [ "$pkg" = "sing-box" ]; then
                 [ $(wc -c < "$found") -lt 1000000 ] && found=""
               fi
@@ -181,7 +179,9 @@ jobs:
                     [ -f "$archive" ] && {
                       [[ "$archive" == *.zst ]] && zstd -d "$archive" --rm 2>/dev/null || true
                       [[ "$archive" == *.xz ]] && xz -d "$archive" --rm 2>/dev/null || true
-                      gzip "${archive%.*}" 2>/dev/null || true
+                      
+                      # 💡 致命 Bug 修复点：精准拦截，仅压缩解压后暴露出 .tar 的文件，绝不误伤 debian-binary
+                      [[ -f "${archive%.*}" && "${archive%.*}" == *.tar ]] && gzip "${archive%.*}" 2>/dev/null || true
                     }
                   done
                   tar -czf "../$(basename "$found")" debian-binary control.tar.gz data.tar.gz 2>/dev/null || true
@@ -193,7 +193,7 @@ jobs:
             
             echo "#!/bin/sh" > "$tmp_dir/install.sh"
             
-            # 💡 保留：23.05 的架构注入
+            # 23.05 专属架构临时加权注入
             if [ "$target_ver" = "23.05" ]; then
               echo "cp /etc/opkg.conf /etc/opkg.conf.bak" >> "$tmp_dir/install.sh"
               echo "echo 'arch all 1' >> /etc/opkg.conf" >> "$tmp_dir/install.sh"
@@ -204,12 +204,11 @@ jobs:
             
             echo "opkg update && opkg install *.ipk" >> "$tmp_dir/install.sh"
             
-            # 💡 保留：23.05 的洗地删除
+            # 安装结束后 23.05 洗地恢复
             if [ "$target_ver" = "23.05" ]; then
               echo "mv /etc/opkg.conf.bak /etc/opkg.conf" >> "$tmp_dir/install.sh"
             fi
             
-            # 💡 动态生成带后缀的最终文件名
             local out_name="run_output/install_passwall_${target_ver}${suffix}.run"
             cat << 'EOF' > "$out_name"
           #!/bin/sh
@@ -225,9 +224,7 @@ jobs:
             rm -rf "run_tmp_${target_ver}${suffix}"
           }
           
-          # ==========================================
-          # 🛒 第一组：生成原始的常规混合版 (包含 xray)
-          # ==========================================
+          # 🛒 第一轨：常规混合版 (包含 xray)
           list_2_mixed=("luci-compat" "luci-app-passwall" "luci-i18n-passwall-zh-cn" "tcping" "chinadns-ng" "dns2socks" "microsocks" "xray-core" "unzip")
           list_n_mixed=("luci-compat" "luci-app-passwall" "luci-i18n-passwall-zh-cn" "tcping" "chinadns-ng" "dns2socks" "microsocks" "xray-core" "sing-box" "unzip")
           
@@ -235,19 +232,13 @@ jobs:
           create_run "packages-23.05" "23.05" "" "${list_n_mixed[@]}"
           create_run "packages-24.10" "24.10" "" "${list_n_mixed[@]}"
 
-          # ==========================================
-          # 🛒 第二组：生成专属的纯净版 (仅含 sing-box)
-          # ==========================================
+          # 🛒 第二轨：专属纯净版 (仅含 sing-box)
           list_singbox_only=("luci-compat" "luci-app-passwall" "luci-i18n-passwall-zh-cn" "tcping" "chinadns-ng" "dns2socks" "microsocks" "sing-box" "unzip")
           
-          # 传入 "-singbox" 作为后缀参数
           create_run "packages-21.02" "21.02" "-singbox" "${list_singbox_only[@]}"
           create_run "packages-23.05" "23.05" "-singbox" "${list_singbox_only[@]}"
           create_run "packages-24.10" "24.10" "-singbox" "${list_singbox_only[@]}"
 
-      # =======================================================
-      # 📝 核心：生成短连接专属备忘录 my.txt
-      # =======================================================
       - name: Generate Secret Memo
         run: |
           mkdir -p web_root
@@ -276,45 +267,18 @@ jobs:
           ==================================================
           EOF
 
-      - name: Generate Index
+      - name: Stage Files for Deployment
         run: |
           mkdir -p web_root
           mv packages-* web_root/ 2>/dev/null || true
-          
-          generate_index() {
-            local dir=$1
-            local title=$2
-            local index_file="$dir/index.html"
-            [ ! -d "$dir" ] && return 0
-            echo "<html><head><meta charset='UTF-8'><meta name='robots' content='noindex,nofollow'><title>$title</title></head><body>" > "$index_file"
-            echo "<h3>Index of ${dir:-/}</h3><hr>" >> "$index_file"
-            [ "$(basename "$dir")" != "web_root" ] && echo "<div><a href='../index.html'>[ .. ]</a></div>" >> "$index_file"
-            find "$dir" -maxdepth 1 -type d -not -path "$dir" -not -path '*/.*' | sort | while read -r subdir; do
-              local name=$(basename "$subdir")
-              echo "<div>DIR: <a href='$name/index.html'>$name/</a></div>" >> "$index_file"
-            done
-            
-            # 💡 核心除错处理：网页索引生成时完全无视 my.txt，实现潜行效果！
-            find "$dir" -maxdepth 1 -type f -not -name "index.html" -not -name "my.txt" -not -path '*/.*' | sort | while read -r file; do
-              local name=$(basename "$file")
-              echo "<div>FILE: <a href='$name'>$name</a></div>" >> "$index_file"
-            done
-            echo "<hr>Nodes status: OK / $REPORT_DATE</body></html>" >> "$index_file"
-          }
-          generate_index "web_root" "Software Feeds Index"
-          find web_root -maxdepth 4 -type d -not -path '*/.*' | while read -r d; do
-            [ "$d" = "web_root" ] && continue
-            generate_index "$d" "$(basename "$d")"
-          done
 
       - name: Release .run files to GitHub Releases
-        if: env.MAIN_UPDATED == 'true' || github.event_name == 'workflow_dispatch'
+        if: env.ANY_UPDATED == 'true' || github.event_name == 'workflow_dispatch'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG_NAME="latest-a53"
           gh release delete "$TAG_NAME" --cleanup-tag -y || true
-          # 💡 这里它会自动把 run_output 目录下所有的 6 个 .run 文件一起打包发布上去！
           gh release create "$TAG_NAME" run_output/*.run --title "Passwall-A53-一键安装离线包" --notes-file update_log.txt
 
       - name: Deploy Software Feeds to GitHub Pages
