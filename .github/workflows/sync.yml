@@ -1,4 +1,4 @@
-name: Sync and Mixed Build Files清爽带链接
+name: Sync and Mixed Build Files双轨打包
 
 on:
   schedule:
