@@ -1,4 +1,4 @@
-name: Sync and Mixed Build Files双轨打包
+name: Sync and Mixed Build Files清爽带链接
 
 on:
   schedule:
@@ -31,9 +31,14 @@ jobs:
           BEIJING_TIME=$(TZ='Asia/Shanghai' date +'%Y-%m-%d %H:%M')
           echo "REPORT_DATE=$BEIJING_TIME" >> $GITHUB_ENV
           
-          VERSIONS=("packages-24.10" "packages-23.05" "packages-21.02")
+          # 💡 升级点 1：采用 版本:架构 的配对阵列，支持多架构并行拉取
+          TARGETS=(
+            "packages-24.10:aarch64_cortex-a53"
+            "packages-23.05:aarch64_cortex-a53"
+            "packages-21.02:aarch64_cortex-a53"
+            "packages-22.03:mipsel_24kc"
+          )
           DIRS=("passwall_packages" "passwall2" "passwall_luci")
-          ARCH="aarch64_cortex-a53"
           
           LOG_FILE="update_log.txt"
           rm -f plugin_list.txt && touch plugin_list.txt
@@ -41,11 +46,13 @@ jobs:
           LATEST_VERSION_STR=""
           
           # 100% 强行全量拉取，杜绝哈希错配
-          for v in "${VERSIONS[@]}"; do
+          for target in "${TARGETS[@]}"; do
+            v="${target%%:*}"
+            a="${target##*:}"
             for d in "${DIRS[@]}"; do
-              LOCAL_DIR="$v/$ARCH/$d"
+              LOCAL_DIR="$v/$a/$d"
               mkdir -p "$LOCAL_DIR"
-              PAGE_URL="https://sourceforge.net/projects/openwrt-passwall-build/files/releases/$v/$ARCH/$d/"
+              PAGE_URL="https://sourceforge.net/projects/openwrt-passwall-build/files/releases/$v/$a/$d/"
               REMOTE_FILES=$(curl -sL "$PAGE_URL" | grep -o 'href="[^"]*/download"' | awk -F'/' '{print $(NF-1)}' || true)
               
               for filename in $REMOTE_FILES; do
@@ -53,7 +60,7 @@ jobs:
                 LOCAL_FILE="$LOCAL_DIR/$filename"
                 OLD_STATE_FILE="old_state/$LOCAL_DIR/$filename"
                 
-                curl -fsL -R -O --output-dir "$LOCAL_DIR" "https://downloads.sourceforge.net/project/openwrt-passwall-build/releases/$v/$ARCH/$d/$filename" --retry 3 || true
+                curl -fsL -R -O --output-dir "$LOCAL_DIR" "https://downloads.sourceforge.net/project/openwrt-passwall-build/releases/$v/$a/$d/$filename" --retry 3 || true
                 
                 if [[ "$filename" == *.ipk ]]; then
                   if [ -f "$LOCAL_FILE" ]; then
@@ -79,10 +86,10 @@ jobs:
             done
           done
           
-          # 🩹 动态修补 21.02：无缝借用 23.05 的强劲核心组件
+          # 🩹 动态修补 21.02：无缝借用 23.05 的强劲核心组件 (仅限 aarch64)
           WORKSPACE=$PWD
-          DIR_2102="$WORKSPACE/packages-21.02/$ARCH/passwall_packages"
-          DIR_2305="$WORKSPACE/packages-23.05/$ARCH/passwall_packages"
+          DIR_2102="$WORKSPACE/packages-21.02/aarch64_cortex-a53/passwall_packages"
+          DIR_2305="$WORKSPACE/packages-23.05/aarch64_cortex-a53/passwall_packages"
           
           if [ -d "$DIR_2102" ] && [ -d "$DIR_2305" ]; then
             cd "$DIR_2102"
@@ -132,7 +139,7 @@ jobs:
             echo "" >> "$TMP_LOG"
             echo "- ✅ Passwall 主程序已全自动同步并滚动升级。" >> "$TMP_LOG"
           else
-            CURRENT_FILE=$(find packages-24.10/$ARCH -type f -name "luci-app-passwall_*.ipk" 2>/dev/null | head -n 1 || true)
+            CURRENT_FILE=$(find packages-24.10/aarch64_cortex-a53 -type f -name "luci-app-passwall_*.ipk" 2>/dev/null | head -n 1 || true)
             if [ -n "$CURRENT_FILE" ]; then
               CUR_VER=$(basename "$CURRENT_FILE" | sed -E 's/luci-app-passwall_([0-9.]+-[0-9a-zA-Z_.]+)_all\.ipk/\1/')
               echo "> ℹ️ **当前稳定运行维护中 | 核心版本: \`${CUR_VER}\`**" >> "$TMP_LOG"
@@ -148,29 +155,34 @@ jobs:
         if: env.ANY_UPDATED == 'true' || github.event_name == 'workflow_dispatch'
         run: |
           mkdir -p run_output
-          ARCH="aarch64_cortex-a53"
           
+          # 💡 升级点 2：打包函数新增 arch 架构参数
           create_run() {
             local source_ver=$1
             local target_ver=$2
             local suffix=$3
-            shift 3
+            local arch=$4
+            shift 4
             local pkgs=("$@")
             
-            local tmp_dir="run_tmp_${target_ver}${suffix}/passwall_install_tmp"
+            # 使用架构命名文件夹以防冲突
+            local tmp_dir="run_tmp_${target_ver}_${arch}${suffix}/passwall_install_tmp"
             mkdir -p "$tmp_dir"
             
             for pkg in "${pkgs[@]}"; do
-              found=$(find "$source_ver/$ARCH" -type f -name "${pkg}_*.ipk" 2>/dev/null | sort -V | tail -n 1 || true)
+              # 精确到对应架构目录下去寻找
+              found=$(find "$source_ver/$arch" -type f -name "${pkg}_*.ipk" 2>/dev/null | sort -V | tail -n 1 || true)
               if [ -n "$found" ] && [ "$pkg" = "sing-box" ]; then
                 [ $(wc -c < "$found") -lt 1000000 ] && found=""
               fi
               if [ -z "$found" ]; then
-                found=$(find packages-*/$ARCH -type f -name "${pkg}_*.ipk" -size +2k 2>/dev/null | sort -V | tail -n 1 || true)
+                found=$(find packages-*/$arch -type f -name "${pkg}_*.ipk" -size +2k 2>/dev/null | sort -V | tail -n 1 || true)
               fi
               
               if [ -n "$found" ] && [ -f "$found" ]; then
                 cp "$found" "$tmp_dir/"
+                
+                # 仅限 21.02 执行降级解压
                 if [ "$target_ver" = "21.02" ]; then
                   mkdir -p "$tmp_dir/unpack"
                   tar -xf "$tmp_dir/$(basename "$found")" -C "$tmp_dir/unpack/" 2>/dev/null || true
@@ -179,8 +191,6 @@ jobs:
                     [ -f "$archive" ] && {
                       [[ "$archive" == *.zst ]] && zstd -d "$archive" --rm 2>/dev/null || true
                       [[ "$archive" == *.xz ]] && xz -d "$archive" --rm 2>/dev/null || true
-                      
-                      # 💡 致命 Bug 修复点：精准拦截，仅压缩解压后暴露出 .tar 的文件，绝不误伤 debian-binary
                       [[ -f "${archive%.*}" && "${archive%.*}" == *.tar ]] && gzip "${archive%.*}" 2>/dev/null || true
                     }
                   done
@@ -193,8 +203,8 @@ jobs:
             
             echo "#!/bin/sh" > "$tmp_dir/install.sh"
             
-            # 23.05 专属架构临时加权注入
-            if [ "$target_ver" = "23.05" ]; then
+            # 23.05 专属架构临时加权注入 (基于 aarch64，新加入的 mipsel_24kc 会自动跳过此段)
+            if [ "$target_ver" = "23.05" ] && [ "$arch" = "aarch64_cortex-a53" ]; then
               echo "cp /etc/opkg.conf /etc/opkg.conf.bak" >> "$tmp_dir/install.sh"
               echo "echo 'arch all 1' >> /etc/opkg.conf" >> "$tmp_dir/install.sh"
               echo "echo 'arch noarch 1' >> /etc/opkg.conf" >> "$tmp_dir/install.sh"
@@ -204,12 +214,12 @@ jobs:
             
             echo "opkg update && opkg install *.ipk" >> "$tmp_dir/install.sh"
             
-            # 安装结束后 23.05 洗地恢复
-            if [ "$target_ver" = "23.05" ]; then
+            if [ "$target_ver" = "23.05" ] && [ "$arch" = "aarch64_cortex-a53" ]; then
               echo "mv /etc/opkg.conf.bak /etc/opkg.conf" >> "$tmp_dir/install.sh"
             fi
             
-            local out_name="run_output/install_passwall_${target_ver}${suffix}.run"
+            # 💡 升级点 3：输出文件名带上架构标识，避免不同架构重名覆盖
+            local out_name="run_output/install_passwall_${target_ver}_${arch}${suffix}.run"
             cat << 'EOF' > "$out_name"
           #!/bin/sh
           ARCHIVE=$(awk '/^__ARCHIVE_BELOW__/ {print NR + 1; exit 0; }' "$0")
@@ -219,25 +229,34 @@ jobs:
           exit 0
           __ARCHIVE_BELOW__
           EOF
-            tar -czf - -C "run_tmp_${target_ver}${suffix}" passwall_install_tmp >> "$out_name"
+            tar -czf - -C "run_tmp_${target_ver}_${arch}${suffix}" passwall_install_tmp >> "$out_name"
             chmod +x "$out_name"
-            rm -rf "run_tmp_${target_ver}${suffix}"
+            rm -rf "run_tmp_${target_ver}_${arch}${suffix}"
           }
           
+          # ==========================================
           # 🛒 第一轨：常规混合版 (包含 xray)
+          # ==========================================
           list_2_mixed=("luci-compat" "luci-app-passwall" "luci-i18n-passwall-zh-cn" "tcping" "chinadns-ng" "dns2socks" "microsocks" "xray-core" "unzip")
           list_n_mixed=("luci-compat" "luci-app-passwall" "luci-i18n-passwall-zh-cn" "tcping" "chinadns-ng" "dns2socks" "microsocks" "xray-core" "sing-box" "unzip")
           
-          create_run "packages-21.02" "21.02" "" "${list_2_mixed[@]}"
-          create_run "packages-23.05" "23.05" "" "${list_n_mixed[@]}"
-          create_run "packages-24.10" "24.10" "" "${list_n_mixed[@]}"
+          # 传参格式：版本路径, 版本号, 后缀, 架构名, 列表
+          create_run "packages-21.02" "21.02" "" "aarch64_cortex-a53" "${list_2_mixed[@]}"
+          create_run "packages-23.05" "23.05" "" "aarch64_cortex-a53" "${list_n_mixed[@]}"
+          create_run "packages-24.10" "24.10" "" "aarch64_cortex-a53" "${list_n_mixed[@]}"
+          # 🚀 新增预留的 22.03 mipsel_24kc
+          create_run "packages-22.03" "22.03" "" "mipsel_24kc" "${list_n_mixed[@]}"
 
+          # ==========================================
           # 🛒 第二轨：专属纯净版 (仅含 sing-box)
+          # ==========================================
           list_singbox_only=("luci-compat" "luci-app-passwall" "luci-i18n-passwall-zh-cn" "tcping" "chinadns-ng" "dns2socks" "microsocks" "sing-box" "unzip")
           
-          create_run "packages-21.02" "21.02" "-singbox" "${list_singbox_only[@]}"
-          create_run "packages-23.05" "23.05" "-singbox" "${list_singbox_only[@]}"
-          create_run "packages-24.10" "24.10" "-singbox" "${list_singbox_only[@]}"
+          create_run "packages-21.02" "21.02" "-singbox" "aarch64_cortex-a53" "${list_singbox_only[@]}"
+          create_run "packages-23.05" "23.05" "-singbox" "aarch64_cortex-a53" "${list_singbox_only[@]}"
+          create_run "packages-24.10" "24.10" "-singbox" "aarch64_cortex-a53" "${list_singbox_only[@]}"
+          # 🚀 新增预留的 22.03 mipsel_24kc
+          create_run "packages-22.03" "22.03" "-singbox" "mipsel_24kc" "${list_singbox_only[@]}"
 
       - name: Generate Secret Memo
         run: |
@@ -247,20 +266,25 @@ jobs:
           🔒 个人专属自建源配置备忘录 (CF Worker 加速纯净版)
           ==================================================
 
-          【🌐 路由器适用：OpenWrt 21.02 分支】
+          【🌐 A53 路由器适用：OpenWrt 21.02 分支】
           src/gz custom_pw_packages https://git.dawu.de5.net/packages-21.02/aarch64_cortex-a53/passwall_packages
           src/gz custom_pw_packages2 https://git.dawu.de5.net/packages-21.02/aarch64_cortex-a53/passwall2
           src/gz custom_pw_luci https://git.dawu.de5.net/packages-21.02/aarch64_cortex-a53/passwall_luci
 
-          【🌐 路由器适用：OpenWrt 23.05 分支】
+          【🌐 A53 路由器适用：OpenWrt 23.05 分支】
           src/gz custom_pw_packages https://git.dawu.de5.net/packages-23.05/aarch64_cortex-a53/passwall_packages
           src/gz custom_pw_packages2 https://git.dawu.de5.net/packages-23.05/aarch64_cortex-a53/passwall2
           src/gz custom_pw_luci https://git.dawu.de5.net/packages-23.05/aarch64_cortex-a53/passwall_luci
 
-          【🌐 路由器适用：OpenWrt 24.10 分支】
+          【🌐 A53 路由器适用：OpenWrt 24.10 分支】
           src/gz custom_pw_packages https://git.dawu.de5.net/packages-24.10/aarch64_cortex-a53/passwall_packages
           src/gz custom_pw_packages2 https://git.dawu.de5.net/packages-24.10/aarch64_cortex-a53/passwall2
           src/gz custom_pw_luci https://git.dawu.de5.net/packages-24.10/aarch64_cortex-a53/passwall_luci
+
+          【🌐 mipsel_24kc 路由器适用：OpenWrt 22.03 分支】
+          src/gz custom_pw_packages https://git.dawu.de5.net/packages-22.03/mipsel_24kc/passwall_packages
+          src/gz custom_pw_packages2 https://git.dawu.de5.net/packages-22.03/mipsel_24kc/passwall2
+          src/gz custom_pw_luci https://git.dawu.de5.net/packages-22.03/mipsel_24kc/passwall_luci
 
           【⚡ 清理强缓存命令】
           rm -rf /var/opkg-lists/* && opkg update
@@ -277,9 +301,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          TAG_NAME="latest-a53"
+          TAG_NAME="latest-builds"
           gh release delete "$TAG_NAME" --cleanup-tag -y || true
-          gh release create "$TAG_NAME" run_output/*.run --title "Passwall-A53-一键安装离线包" --notes-file update_log.txt
+          gh release create "$TAG_NAME" run_output/*.run --title "Passwall-全架构一键离线包" --notes-file update_log.txt
 
       - name: Deploy Software Feeds to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
