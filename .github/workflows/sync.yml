@@ -303,7 +303,7 @@ jobs:
         run: |
           TAG_NAME="latest-builds"
           gh release delete "$TAG_NAME" --cleanup-tag -y || true
-          gh release create "$TAG_NAME" run_output/*.run --title "Passwall-全架构一键离线包" --notes-file update_log.txt
+          gh release create "$TAG_NAME" run_output/*.run --title "Passwall-自定义离线包" --notes-file update_log.txt
 
       - name: Deploy Software Feeds to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
