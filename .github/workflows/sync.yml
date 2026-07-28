@@ -245,7 +245,7 @@ jobs:
           create_run "packages-23.05" "23.05" "" "aarch64_cortex-a53" "${list_n_mixed[@]}"
           create_run "packages-24.10" "24.10" "" "aarch64_cortex-a53" "${list_n_mixed[@]}"
           # 🚀 新增预留的 22.03 mipsel_24kc
-          create_run "packages-22.03" "22.03" "" "mipsel_24kc" "${list_n_mixed[@]}"
+          # create_run "packages-22.03" "22.03" "" "mipsel_24kc" "${list_n_mixed[@]}"
 
           # ==========================================
           # 🛒 第二轨：专属纯净版 (仅含 sing-box)
@@ -256,7 +256,7 @@ jobs:
           create_run "packages-23.05" "23.05" "-singbox" "aarch64_cortex-a53" "${list_singbox_only[@]}"
           create_run "packages-24.10" "24.10" "-singbox" "aarch64_cortex-a53" "${list_singbox_only[@]}"
           # 🚀 新增预留的 22.03 mipsel_24kc
-          create_run "packages-22.03" "22.03" "-singbox" "mipsel_24kc" "${list_singbox_only[@]}"
+          # create_run "packages-22.03" "22.03" "-singbox" "mipsel_24kc" "${list_singbox_only[@]}"
 
       - name: Generate Secret Memo
         run: |
