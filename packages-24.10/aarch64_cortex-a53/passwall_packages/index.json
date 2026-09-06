@@ -1,0 +1,33 @@
+{
+  "version": 2,
+  "architecture": "aarch64_cortex-a53",
+  "packages": {
+    "chinadns-ng": "2025.08.09-r1",
+    "dns2socks": "2.1-r2",
+    "geoview": "0.2.6-r1",
+    "hysteria": "2.12.2-r1",
+    "ipt2socks": "1.1.4-r3",
+    "microsocks": "1.0.5-r2",
+    "naiveproxy": "150.0.7871.63-r1",
+    "shadow-tls": "0.2.25-r1",
+    "shadowsocks-rust-sslocal": "1.25.0-r1",
+    "shadowsocks-rust-ssmanager": "1.25.0-r1",
+    "shadowsocks-rust-ssserver": "1.25.0-r1",
+    "shadowsocks-rust-ssservice": "1.25.0-r1",
+    "shadowsocks-rust-ssurl": "1.25.0-r1",
+    "shadowsocksr-libev-ssr-check": "2.5.6-r12",
+    "shadowsocksr-libev-ssr-local": "2.5.6-r12",
+    "shadowsocksr-libev-ssr-nat": "2.5.6-r12",
+    "shadowsocksr-libev-ssr-redir": "2.5.6-r12",
+    "shadowsocksr-libev-ssr-server": "2.5.6-r12",
+    "simple-obfs-client": "0.0.5-r3",
+    "simple-obfs-server": "0.0.5-r3",
+    "sing-box": "1.14.0-r1",
+    "tcping": "0.3-r1",
+    "v2ray-geoip": "202608270741.1",
+    "v2ray-geosite": "202608290326.1",
+    "v2ray-plugin": "5.49.0-r1",
+    "xray-core": "26.7.28-r1",
+    "xray-plugin": "1.8.24-r1"
+  }
+}

@@ -1,0 +1,44 @@
+Package: luci-app-passwall2
+Version: 26.9.2
+Depends: libc, coreutils, coreutils-base64, coreutils-nohup, coreutils-timeout, curl, ip-full, libuci-lua, lua, luci-compat, luci-lib-jsonc, lyaml, resolveip, tcping, geoview, v2ray-geoip, v2ray-geosite, unzip, luci-lua-runtime
+Section: luci
+Architecture: all
+Installed-Size: 342599
+Filename: luci-app-passwall2_26.9.2_all.ipk
+Size: 343579
+SHA256sum: 2e12e0ac62bd95518ddfb27526b4dfda782075457144f41ddce06adc1158c3cc
+Description:  LuCI support for PassWall 2
+
+Package: luci-i18n-passwall2-ru
+Version: 26.9.2
+Depends: libc, luci-app-passwall2
+Section: luci
+Architecture: all
+Installed-Size: 23268
+Filename: luci-i18n-passwall2-ru_26.9.2_all.ipk
+Size: 24007
+SHA256sum: 5646b051843b01ddb7587bcb2857bb35eb971a5d909b2af884a7444017c9139d
+Description:  Translation for luci-app-passwall2 - Русский (Russian)
+
+Package: luci-i18n-passwall2-zh-cn
+Version: 26.9.2
+Depends: libc, luci-app-passwall2
+Section: luci
+Architecture: all
+Installed-Size: 19391
+Filename: luci-i18n-passwall2-zh-cn_26.9.2_all.ipk
+Size: 20162
+SHA256sum: 974280957251441f5fe170390c58c0d24a50b138074003a96fbef9c684fe3016
+Description:  Translation for luci-app-passwall2 - 简体中文 (Chinese Simplified)
+
+Package: luci-i18n-passwall2-zh-tw
+Version: 26.9.2
+Depends: libc, luci-app-passwall2
+Section: luci
+Architecture: all
+Installed-Size: 19558
+Filename: luci-i18n-passwall2-zh-tw_26.9.2_all.ipk
+Size: 20323
+SHA256sum: 49f8d7146310f11587dfe76ac3dafd38610a5df8ae70c9917272b5ac536ede3a
+Description:  Translation for luci-app-passwall2 - 繁體中文 (Chinese Traditional)
+

@@ -1,0 +1,172 @@
+Package: chinadns-ng
+Version: 2025.08.09-1
+Depends: libc
+Source: feeds/passwall_packages/chinadns-ng
+SourceName: chinadns-ng
+License: AGPL-3.0-only
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1755050199
+Maintainer: sbwml <admin@cooluc.com>
+Architecture: aarch64_cortex-a53
+Installed-Size: 269645
+Filename: chinadns-ng_2025.08.09-1_aarch64_cortex-a53.ipk
+Size: 269708
+SHA256sum: 8c6a8353db67e33b256f5711e23e4e7315f2ac266f76cd318dd20beb220b8469
+Description:  ChinaDNS next generation, refactoring with epoll and ipset.
+
+Package: dns2socks
+Version: 2.1-2
+Depends: libc, libpthread
+Source: feeds/passwall_packages/dns2socks
+SourceName: dns2socks
+License: BSD-3-Clause
+Section: net
+SourceDateEpoch: 1771387760
+Maintainer: ghostmaker
+Architecture: aarch64_cortex-a53
+Installed-Size: 11214
+Filename: dns2socks_2.1-2_aarch64_cortex-a53.ipk
+Size: 12020
+SHA256sum: 33381a792b2957e48645a70e9152935b22bc96d403a73a7e100d2209d58fdfa3
+Description:  This is a command line utility to resolve DNS requests via
+ a SOCKS tunnel like Tor or a HTTP proxy.
+
+Package: ipt2socks
+Version: 1.1.4-3
+Depends: libc, libpthread
+Source: feeds/passwall_packages/ipt2socks
+SourceName: ipt2socks
+License: AGPL-3.0
+Section: net
+SourceDateEpoch: 1716035253
+Architecture: aarch64_cortex-a53
+Installed-Size: 27677
+Filename: ipt2socks_1.1.4-3_aarch64_cortex-a53.ipk
+Size: 28443
+SHA256sum: 632172f313740f881b835c4a47a6dcf1de23a7edac1e64f60e1dd7ef60fdb3f8
+Description:  Utility for converting iptables (redirect/tproxy) to socks5.
+
+Package: microsocks
+Version: 1.0.5-2
+Depends: libc, libpthread
+Source: feeds/passwall_packages/microsocks
+SourceName: microsocks
+License: MIT
+LicenseFiles: COPYING
+Section: net
+SourceDateEpoch: 1775619603
+Maintainer: lean
+Architecture: aarch64_cortex-a53
+Installed-Size: 7913
+Filename: microsocks_1.0.5-2_aarch64_cortex-a53.ipk
+Size: 8771
+SHA256sum: 4b9bf6d88a12e4f9d8d1fbafd655b23e98531398adb4244953c253c5976a2ed4
+Description:  A SOCKS5 service that you can run on your remote boxes to tunnel connections
+ through them, if for some reason SSH doesn't cut it for you.
+ This version supports forwarding rules.
+
+Package: naiveproxy
+Version: 150.0.7871.63-1
+Depends: libc, libatomic1
+Source: feeds/passwall_packages/naiveproxy
+SourceName: naiveproxy
+License: BSD 3-Clause
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1783099037
+Maintainer: sbwml <admin@cooluc.com>
+Architecture: aarch64_cortex-a53
+Installed-Size: 3653203
+Filename: naiveproxy_150.0.7871.63-1_aarch64_cortex-a53.ipk
+Size: 3649329
+SHA256sum: ad2a3c2c338a716a93a21c1857731b3e589ff9043fc1414d6b31884a02392c2b
+Description:  NaïveProxy uses Chrome's network stack to camouflage traffic with strong
+ censorship resistance and low detectability. Reusing Chrome's stack also
+ ensures best practices in performance and security.
+
+Package: simple-obfs-client
+Version: 0.0.5-3
+Depends: libc, libpthread, libev
+Provides: simple-obfs
+Source: feeds/passwall_packages/simple-obfs
+SourceName: simple-obfs-client
+License: GPL-3.0-or-later
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1754489965
+Maintainer: Jian Chang <aa65535@live.com>
+Architecture: aarch64_cortex-a53
+Installed-Size: 31098
+Filename: simple-obfs-client_0.0.5-3_aarch64_cortex-a53.ipk
+Size: 31844
+SHA256sum: e1c7a9b9ba6978b94025d7ba1aa6d7450ababa979df0b564f5a283257a235876
+Description:  Simple-obfs is a simple obfusacting tool, designed as plugin server of shadowsocks.
+
+Package: simple-obfs-server
+Version: 0.0.5-3
+Depends: libc, libpthread, libev
+Source: feeds/passwall_packages/simple-obfs
+SourceName: simple-obfs-server
+License: GPL-3.0-or-later
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1754489965
+Maintainer: Jian Chang <aa65535@live.com>
+Architecture: aarch64_cortex-a53
+Installed-Size: 33485
+Filename: simple-obfs-server_0.0.5-3_aarch64_cortex-a53.ipk
+Size: 34336
+SHA256sum: cf21d5acc6b3ca0436d1fcfdbdcaac2bdf64057d4e032949ff80a7b21c5489c7
+Description:  Simple-obfs is a simple obfusacting tool, designed as plugin server of shadowsocks.
+
+Package: tcping
+Version: 0.3-1
+Depends: libc
+Source: feeds/passwall_packages/tcping
+SourceName: tcping
+License: GPL-2.0-only
+LicenseFiles: license.txt
+Section: net
+SourceDateEpoch: 1754734070
+Architecture: aarch64_cortex-a53
+Installed-Size: 3527
+Filename: tcping_0.3-1_aarch64_cortex-a53.ipk
+Size: 4234
+SHA256sum: a029728f1229816d1fdc6e29c265e1bfc514bcb7e412e2a92cc70e012fd7b74b
+Description:  tcping measures the latency of a tcp-connection
+
+Package: v2ray-geoip
+Version: 202608270741.1
+Depends: libc
+Source: feeds/passwall_packages/v2ray-geodata
+SourceName: v2ray-geoip
+License: CC-BY-SA-4.0
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1788008865
+Maintainer: Tianling Shen <cnsztl@immortalwrt.org>
+Architecture: all
+Installed-Size: 3814959
+Filename: v2ray-geoip_202608270741.1_all.ipk
+Size: 3558820
+SHA256sum: 0fd7691c54d925a523c153f33736c8e51dd73fa9fe37940ac00a66001c84898e
+Description:  GeoIP List for V2Ray
+
+Package: v2ray-geosite
+Version: 202608290326.1
+Depends: libc
+Source: feeds/passwall_packages/v2ray-geodata
+SourceName: v2ray-geosite
+License: MIT
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1788008865
+Maintainer: Tianling Shen <cnsztl@immortalwrt.org>
+Architecture: all
+Installed-Size: 3613012
+Filename: v2ray-geosite_202608290326.1_all.ipk
+Size: 3612883
+SHA256sum: 34cb85cf8a0d512640f80ac1a97a1102f0ee461fa4157f45c5df52a3d789102c
+Description:  Geosite List for V2Ray
+

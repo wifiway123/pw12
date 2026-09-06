@@ -1,0 +1,27 @@
+==================================================
+🔒 个人专属自建源配置备忘录 (CF Worker 加速纯净版)
+==================================================
+
+【🌐 A53 路由器适用：OpenWrt 21.02 分支】
+src/gz custom_pw_packages https://git.dawu.de5.net/packages-21.02/aarch64_cortex-a53/passwall_packages
+src/gz custom_pw_packages2 https://git.dawu.de5.net/packages-21.02/aarch64_cortex-a53/passwall2
+src/gz custom_pw_luci https://git.dawu.de5.net/packages-21.02/aarch64_cortex-a53/passwall_luci
+
+【🌐 A53 路由器适用：OpenWrt 23.05 分支】
+src/gz custom_pw_packages https://git.dawu.de5.net/packages-23.05/aarch64_cortex-a53/passwall_packages
+src/gz custom_pw_packages2 https://git.dawu.de5.net/packages-23.05/aarch64_cortex-a53/passwall2
+src/gz custom_pw_luci https://git.dawu.de5.net/packages-23.05/aarch64_cortex-a53/passwall_luci
+
+【🌐 A53 路由器适用：OpenWrt 24.10 分支】
+src/gz custom_pw_packages https://git.dawu.de5.net/packages-24.10/aarch64_cortex-a53/passwall_packages
+src/gz custom_pw_packages2 https://git.dawu.de5.net/packages-24.10/aarch64_cortex-a53/passwall2
+src/gz custom_pw_luci https://git.dawu.de5.net/packages-24.10/aarch64_cortex-a53/passwall_luci
+
+【🌐 mipsel_24kc 路由器适用：OpenWrt 22.03 分支】
+src/gz custom_pw_packages https://git.dawu.de5.net/packages-22.03/mipsel_24kc/passwall_packages
+src/gz custom_pw_packages2 https://git.dawu.de5.net/packages-22.03/mipsel_24kc/passwall2
+src/gz custom_pw_luci https://git.dawu.de5.net/packages-22.03/mipsel_24kc/passwall_luci
+
+【⚡ 清理强缓存命令】
+rm -rf /var/opkg-lists/* && opkg update
+==================================================
