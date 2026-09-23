@@ -1,0 +1,57 @@
+Package: luci-app-passwall2
+Version: 26.9.16
+Depends: libc, coreutils, coreutils-base64, coreutils-nohup, coreutils-timeout, curl, ip-full, libuci-lua, lua, luci-compat, luci-lib-jsonc, lyaml, resolveip, tcping, geoview, v2ray-geoip, v2ray-geosite, unzip
+Source: feeds/passwall2/luci-app-passwall2
+SourceName: luci-app-passwall2
+Section: luci
+SourceDateEpoch: 1789899781
+Maintainer: OpenWrt LuCI community
+Architecture: all
+Installed-Size: 343218
+Filename: luci-app-passwall2_26.9.16_all.ipk
+Size: 344222
+SHA256sum: d4811ce04451b0422fd3d40ebb2e28f37a811bd8df31ab0b13204c97beaa3bf9
+Description:  LuCI support for PassWall 2
+
+Package: luci-i18n-passwall2-ru
+Version: 26.9.16
+Depends: libc, luci-app-passwall2
+Source: feeds/passwall2/luci-app-passwall2
+SourceName: luci-i18n-passwall2-ru
+Section: luci
+SourceDateEpoch: 1789899781
+Architecture: all
+Installed-Size: 23487
+Filename: luci-i18n-passwall2-ru_26.9.16_all.ipk
+Size: 24306
+SHA256sum: ed83a657b1b03e62f67d18619d9393e8c992416d7caad7ed39c59de9e82ab102
+Description:  Translation for luci-app-passwall2 - Русский (Russian)
+
+Package: luci-i18n-passwall2-zh-cn
+Version: 26.9.16
+Depends: libc, luci-app-passwall2
+Source: feeds/passwall2/luci-app-passwall2
+SourceName: luci-i18n-passwall2-zh-cn
+Section: luci
+SourceDateEpoch: 1789899781
+Architecture: all
+Installed-Size: 19519
+Filename: luci-i18n-passwall2-zh-cn_26.9.16_all.ipk
+Size: 20350
+SHA256sum: 46ddca3b97cddbfe825058a1ca5da3776a5514216227e9cf2d5c4262e317d282
+Description:  Translation for luci-app-passwall2 - 简体中文 (Chinese Simplified)
+
+Package: luci-i18n-passwall2-zh-tw
+Version: 26.9.16
+Depends: libc, luci-app-passwall2
+Source: feeds/passwall2/luci-app-passwall2
+SourceName: luci-i18n-passwall2-zh-tw
+Section: luci
+SourceDateEpoch: 1789899781
+Architecture: all
+Installed-Size: 19694
+Filename: luci-i18n-passwall2-zh-tw_26.9.16_all.ipk
+Size: 20515
+SHA256sum: f9b4007c01a77318929f767badfe60cc415083dc489c5cce0a013d9334db08fb
+Description:  Translation for luci-app-passwall2 - 繁體中文 (Chinese Traditional)
+

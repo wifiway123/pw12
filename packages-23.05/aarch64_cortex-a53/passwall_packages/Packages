@@ -1,0 +1,279 @@
+Package: chinadns-ng
+Version: 2025.08.09-1
+Depends: libc
+License: AGPL-3.0-only
+Section: net
+Architecture: aarch64_cortex-a53
+Installed-Size: 269646
+Filename: chinadns-ng_2025.08.09-1_aarch64_cortex-a53.ipk
+Size: 269711
+SHA256sum: b9aff3c9cada36c8f4b6c0c6bfe6709635e99533db6086df78c5f40eb8a9cf63
+Description:  ChinaDNS next generation, refactoring with epoll and ipset.
+
+Package: dns2socks
+Version: 2.1-2
+Depends: libc, libpthread
+License: BSD-3-Clause
+Section: net
+Architecture: aarch64_cortex-a53
+Installed-Size: 11193
+Filename: dns2socks_2.1-2_aarch64_cortex-a53.ipk
+Size: 11834
+SHA256sum: 3836b7acd26adbfa0a405fb79e237c448babf15b434161e11d6fdc94197e8ab5
+Description:  This is a command line utility to resolve DNS requests via
+ a SOCKS tunnel like Tor or a HTTP proxy.
+
+Package: geoview
+Version: 0.2.6-1
+Depends: libc
+License: Apache-2.0
+Section: net
+Architecture: aarch64_cortex-a53
+Installed-Size: 2995198
+Filename: geoview_0.2.6-1_aarch64_cortex-a53.ipk
+Size: 2988700
+SHA256sum: faf1488f2987444e2a3d42f490d968457957ea781eb59d4c659b0bc2dea0f764
+Description:  geoview is a handy tool to extract useful information from geo* files.
+
+Package: hysteria
+Version: 2.12.3-1
+Depends: libc, ca-bundle
+License: MIT
+Section: net
+Architecture: aarch64_cortex-a53
+Installed-Size: 7957278
+Filename: hysteria_2.12.3-1_aarch64_cortex-a53.ipk
+Size: 7941680
+SHA256sum: 546d92a435743cf4f11fa0bc81861d0dd6d3393b8401edab698f8f293b7ab559
+Description:  Hysteria is a feature-packed network utility optimized for networks
+ of poor quality (e.g. satellite connections, congested public Wi-Fi,
+ connecting from China to servers abroad) powered by a custom version
+ of QUIC protocol.
+
+Package: ipt2socks
+Version: 1.1.4-3
+Depends: libc, libpthread
+License: AGPL-3.0
+Section: net
+Architecture: aarch64_cortex-a53
+Installed-Size: 25404
+Filename: ipt2socks_1.1.4-3_aarch64_cortex-a53.ipk
+Size: 25986
+SHA256sum: 26393c62e15785ace4e082aaf604cc3b33cfe2eb50954a485106a50624bc6e8f
+Description:  Utility for converting iptables (redirect/tproxy) to socks5.
+
+Package: microsocks
+Version: 1.0.5-2
+Depends: libc, libpthread
+License: MIT
+Section: net
+Architecture: aarch64_cortex-a53
+Installed-Size: 7994
+Filename: microsocks_1.0.5-2_aarch64_cortex-a53.ipk
+Size: 8732
+SHA256sum: 38eb555bc934ab61462813031f41ff2e76b77a0fb61aaa1e27c74e768a983591
+Description:  A SOCKS5 service that you can run on your remote boxes to tunnel connections
+ through them, if for some reason SSH doesn't cut it for you.
+ This version supports forwarding rules.
+
+Package: naiveproxy
+Version: 150.0.7871.63-1
+Depends: libc, libatomic1
+License: BSD 3-Clause
+Section: net
+Architecture: aarch64_cortex-a53
+Installed-Size: 3653210
+Filename: naiveproxy_150.0.7871.63-1_aarch64_cortex-a53.ipk
+Size: 3649416
+SHA256sum: 5c9085aa69bd6a6000ce9952f46f54e4171acb2e868615d20e47e669e0d13f7e
+Description:  NaïveProxy uses Chrome's network stack to camouflage traffic with strong
+ censorship resistance and low detectability. Reusing Chrome's stack also
+ ensures best practices in performance and security.
+
+Package: shadow-tls
+Version: 0.2.25-1
+Depends: libc
+License: MIT
+Section: net
+Architecture: aarch64_cortex-a53
+Installed-Size: 1393103
+Filename: shadow-tls_0.2.25-1_aarch64_cortex-a53.ipk
+Size: 1389451
+SHA256sum: b272506633f914f89e94ff33e6a5436573b2cfcba8da0f2e0c55773df0bea996
+Description:  A proxy to expose real tls handshake to the firewall.
+ 
+ It works like trojan but it does not require signing certificate.
+ The firewall will see real tls handshake with valid certificate
+ that you choose.
+
+Package: shadowsocksr-libev-ssr-check
+Version: 2.5.6-13
+Depends: libc, libev, libsodium, libopenssl3, libpthread, libpcre2, libudns, zlib
+License: GPL-3.0
+Section: net
+Architecture: aarch64_cortex-a53
+Installed-Size: 2728
+Filename: shadowsocksr-libev-ssr-check_2.5.6-13_aarch64_cortex-a53.ipk
+Size: 3351
+SHA256sum: f244b4485e03f9e4a8212a208fbececf62395e745c5756f9d1e25bc814d2063d
+Description:  shadowsocksr-libev ssr-check
+
+Package: shadowsocksr-libev-ssr-local
+Version: 2.5.6-13
+Depends: libc, libev, libsodium, libopenssl3, libpthread, libpcre2, libudns, zlib
+License: GPL-3.0
+Section: net
+Architecture: aarch64_cortex-a53
+Installed-Size: 62961
+Filename: shadowsocksr-libev-ssr-local_2.5.6-13_aarch64_cortex-a53.ipk
+Size: 63506
+SHA256sum: ce4b8a50cfe289e24d59433a385513b21688432914f7bb8277ce3129017ed02a
+Description:  shadowsocksr-libev ssr-local
+
+Package: shadowsocksr-libev-ssr-nat
+Version: 2.5.6-13
+Depends: libc, libev, libsodium, libopenssl3, libpthread, libpcre2, libudns, zlib
+License: GPL-3.0
+Section: net
+Architecture: aarch64_cortex-a53
+Installed-Size: 2230
+Filename: shadowsocksr-libev-ssr-nat_2.5.6-13_aarch64_cortex-a53.ipk
+Size: 2996
+SHA256sum: 83966ae4160d59dca3d47e6972867942112fbfdd9effb0cc0530c5c34c5fad0a
+Description:  shadowsocksr-libev ssr-nat
+
+Package: shadowsocksr-libev-ssr-redir
+Version: 2.5.6-13
+Depends: libc, libev, libsodium, libopenssl3, libpthread, libpcre2, libudns, zlib
+License: GPL-3.0
+Section: net
+Architecture: aarch64_cortex-a53
+Installed-Size: 56173
+Filename: shadowsocksr-libev-ssr-redir_2.5.6-13_aarch64_cortex-a53.ipk
+Size: 56792
+SHA256sum: 3da5641abf5cc48309f34f7bf5d26cb46e416b99f118021fb41d1b0222be6132
+Description:  shadowsocksr-libev ssr-redir
+
+Package: shadowsocksr-libev-ssr-server
+Version: 2.5.6-13
+Depends: libc, libev, libsodium, libopenssl3, libpthread, libpcre2, libudns, zlib
+License: GPL-3.0
+Section: net
+Architecture: aarch64_cortex-a53
+Installed-Size: 65916
+Filename: shadowsocksr-libev-ssr-server_2.5.6-13_aarch64_cortex-a53.ipk
+Size: 66519
+SHA256sum: a1e7934b1a383badf70a1704d625433b55c6838f751ed1dc233cf7ed3ef8e23e
+Description:  shadowsocksr-libev ssr-server
+
+Package: simple-obfs-client
+Version: 0.0.5-3
+Depends: libc, libpthread, libev
+Provides: simple-obfs
+License: GPL-3.0-or-later
+Section: net
+Architecture: aarch64_cortex-a53
+Installed-Size: 31684
+Filename: simple-obfs-client_0.0.5-3_aarch64_cortex-a53.ipk
+Size: 32128
+SHA256sum: 8a5a44aa0556f32fc22359d1ceffcd3c904c35674dbc9ac5df590353f4ea54bf
+Description:  Simple-obfs is a simple obfusacting tool, designed as plugin server of shadowsocks.
+
+Package: simple-obfs-server
+Version: 0.0.5-3
+Depends: libc, libpthread, libev
+License: GPL-3.0-or-later
+Section: net
+Architecture: aarch64_cortex-a53
+Installed-Size: 34073
+Filename: simple-obfs-server_0.0.5-3_aarch64_cortex-a53.ipk
+Size: 34600
+SHA256sum: bf7b86eec0045a2608dc140adf4d931feeda90f82a2b83e5ad019e7db475ede3
+Description:  Simple-obfs is a simple obfusacting tool, designed as plugin server of shadowsocks.
+
+Package: sing-box
+Version: 1.14.1-1
+Depends: libc, ca-bundle, kmod-inet-diag, kmod-netlink-diag, kmod-tun
+License: GPL-3.0-or-later
+Section: net
+Architecture: aarch64_cortex-a53
+Installed-Size: 19451057
+Filename: sing-box_1.14.1-1_aarch64_cortex-a53.ipk
+Size: 19406391
+SHA256sum: 4258583f5274f8f3a95cf8a3311e1c88a514e3a914f39c227c5187023ff2c33f
+Description:  Sing-box is a universal proxy platform which supports hysteria, SOCKS, Shadowsocks,
+ ShadowTLS, Tor, trojan, VLess, VMess, WireGuard and so on.
+
+Package: tcping
+Version: 0.3-1
+Depends: libc
+License: GPL-2.0-only
+Section: net
+Architecture: aarch64_cortex-a53
+Installed-Size: 3724
+Filename: tcping_0.3-1_aarch64_cortex-a53.ipk
+Size: 4296
+SHA256sum: f5ee3442f529ac55f6183ce1b8b945943abae2b9299eee34937d42897c58614a
+Description:  tcping measures the latency of a tcp-connection
+
+Package: v2ray-geoip
+Version: 202609040655.1
+Depends: libc
+License: CC-BY-SA-4.0
+Section: net
+Architecture: all
+Installed-Size: 3798362
+Filename: v2ray-geoip_202609040655.1_all.ipk
+Size: 3542055
+SHA256sum: 31c8288de4299ae865cf63ac020a498b101279a7337be8ad74cde08aff7a6a3a
+Description:  GeoIP List for V2Ray
+
+Package: v2ray-geosite
+Version: 202609072354.1
+Depends: libc
+License: MIT
+Section: net
+Architecture: all
+Installed-Size: 3595525
+Filename: v2ray-geosite_202609072354.1_all.ipk
+Size: 3595426
+SHA256sum: 726af7c66c55ba1790c66a544eff11093113150a68cb348207a07e48c5d320f9
+Description:  Geosite List for V2Ray
+
+Package: v2ray-plugin
+Version: 5.49.0-1
+Depends: libc, ca-bundle
+License: MIT
+Section: net
+Architecture: aarch64_cortex-a53
+Installed-Size: 6207284
+Filename: v2ray-plugin_5.49.0-1_aarch64_cortex-a53.ipk
+Size: 6194537
+SHA256sum: e899193b07ab4d57caffefd84b03fda02ac1e70c2cddf97288c2af876df8e1d3
+Description:  SIP003 plugin for shadowsocks, based on v2ray
+
+Package: xray-core
+Version: 26.9.9-1
+Depends: libc, ca-bundle
+License: MPL-2.0
+Section: net
+Architecture: aarch64_cortex-a53
+Installed-Size: 11354040
+Filename: xray-core_26.9.9-1_aarch64_cortex-a53.ipk
+Size: 11329892
+SHA256sum: e81bdc17d3962d23ba24daba9d290ad822e6c3461baad534db49d5960d5b46e8
+Description:  Xray, Penetrates Everything. It helps you to build your own computer network.
+ It secures your network connections and thus protects your privacy.
+
+Package: xray-plugin
+Version: 1.8.24-1
+Depends: libc, ca-bundle
+License: MIT
+Section: net
+Architecture: aarch64_cortex-a53
+Installed-Size: 7011888
+Filename: xray-plugin_1.8.24-1_aarch64_cortex-a53.ipk
+Size: 6997750
+SHA256sum: 1dcd73aa1d36dfeb90b1fbeb129ccb2ddca23ae66c1de7283236ab3d51ef63ef
+Description:  SIP003 plugin for Shadowsocks, based on Xray
+
