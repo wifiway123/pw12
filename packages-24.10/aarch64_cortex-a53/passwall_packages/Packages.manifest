@@ -1,0 +1,492 @@
+Package: chinadns-ng
+Version: 2025.08.09-r1
+Depends: libc
+Source: feeds/passwall_packages/chinadns-ng
+SourceName: chinadns-ng
+License: AGPL-3.0-only
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1790317766
+URL: https://github.com/zfl9/chinadns-ng
+Maintainer: sbwml <admin@cooluc.com>
+Architecture: aarch64_cortex-a53
+Installed-Size: 522240
+Filename: chinadns-ng_2025.08.09-r1_aarch64_cortex-a53.ipk
+Size: 269720
+SHA256sum: 11330088b4a2919f6c0c9ce0b4fac3280b0d1b0f1a57072a775d994d9844f427
+Description:  ChinaDNS next generation, refactoring with epoll and ipset.
+
+Package: dns2socks
+Version: 2.1-r2
+Depends: libc, libpthread
+Source: feeds/passwall_packages/dns2socks
+SourceName: dns2socks
+License: BSD-3-Clause
+Section: net
+SourceDateEpoch: 1790317766
+URL: http://dns2socks.sourceforge.net/
+Maintainer: ghostmaker
+Architecture: aarch64_cortex-a53
+Installed-Size: 71680
+Filename: dns2socks_2.1-r2_aarch64_cortex-a53.ipk
+Size: 11820
+SHA256sum: e8ce44dea383c616ecb54a309efedf7737b901417990a344283108dc145be490
+Description:  This is a command line utility to resolve DNS requests via
+ a SOCKS tunnel like Tor or a HTTP proxy.
+
+Package: geoview
+Version: 0.2.6-r1
+Depends: libc
+Source: feeds/passwall_packages/geoview
+SourceName: geoview
+License: Apache-2.0
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1790317766
+URL: https://github.com/snowie2000/geoview
+Maintainer: snowie2000
+Architecture: aarch64_cortex-a53
+Installed-Size: 7741440
+Filename: geoview_0.2.6-r1_aarch64_cortex-a53.ipk
+Size: 2988558
+SHA256sum: dfa01c9bbb8923e84ae37492fc19c42f4f864d8735687b1207194fcbc945cac7
+Description:  geoview is a handy tool to extract useful information from geo* files.
+
+Package: hysteria
+Version: 2.12.3-r1
+Depends: libc, ca-bundle
+Source: feeds/passwall_packages/hysteria
+SourceName: hysteria
+License: MIT
+Section: net
+SourceDateEpoch: 1790317766
+URL: https://github.com/apernet/hysteria
+Maintainer: Tianling Shen <cnsztl@immortalwrt.org>
+Architecture: aarch64_cortex-a53
+Installed-Size: 21575680
+Filename: hysteria_2.12.3-r1_aarch64_cortex-a53.ipk
+Size: 7940933
+SHA256sum: 1ba474e037d69c3067ef445c3960bbd5f2fccf40efe5255882d2cf54bf0bffd5
+Description:  Hysteria is a feature-packed network utility optimized for networks
+ of poor quality (e.g. satellite connections, congested public Wi-Fi,
+ connecting from China to servers abroad) powered by a custom version
+ of QUIC protocol.
+
+Package: ipt2socks
+Version: 1.1.4-r3
+Depends: libc, libpthread
+Source: feeds/passwall_packages/ipt2socks
+SourceName: ipt2socks
+License: AGPL-3.0
+Section: net
+SourceDateEpoch: 1790317766
+URL: https://github.com/zfl9/ipt2socks
+Architecture: aarch64_cortex-a53
+Installed-Size: 143360
+Filename: ipt2socks_1.1.4-r3_aarch64_cortex-a53.ipk
+Size: 26142
+SHA256sum: 938375e95ecaa28cd0174ebeeaea6391a7fdb23754be67a845e0d998bc95cb3b
+Description:  Utility for converting iptables (redirect/tproxy) to socks5.
+
+Package: microsocks
+Version: 1.0.5-r2
+Depends: libc, libpthread
+Source: feeds/passwall_packages/microsocks
+SourceName: microsocks
+License: MIT
+LicenseFiles: COPYING
+Section: net
+SourceDateEpoch: 1790317766
+URL: https://github.com/rofl0r/microsocks
+Maintainer: lean
+Architecture: aarch64_cortex-a53
+Installed-Size: 71680
+Filename: microsocks_1.0.5-r2_aarch64_cortex-a53.ipk
+Size: 8793
+SHA256sum: c13ea855437987e4b60ebc49fef0ea6e5505b7f55b486aebb80c97d20936c5c8
+Description:  A SOCKS5 service that you can run on your remote boxes to tunnel connections
+ through them, if for some reason SSH doesn't cut it for you.
+ This version supports forwarding rules.
+
+Package: naiveproxy
+Version: 154.0.8037.49-r2
+Depends: libc, libatomic1
+Source: feeds/passwall_packages/naiveproxy
+SourceName: naiveproxy
+License: BSD 3-Clause
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1790317766
+URL: https://github.com/klzgrad/naiveproxy
+Maintainer: sbwml <admin@cooluc.com>
+Architecture: aarch64_cortex-a53
+Installed-Size: 8202240
+Filename: naiveproxy_154.0.8037.49-r2_aarch64_cortex-a53.ipk
+Size: 3985919
+SHA256sum: ebc5ec3427b9a041ea394a4332338b47c1c89dc831f42ede3e56f9883349a89b
+Description:  NaïveProxy uses Chrome's network stack to camouflage traffic with strong
+ censorship resistance and low detectability. Reusing Chrome's stack also
+ ensures best practices in performance and security.
+
+Package: shadow-tls
+Version: 0.2.25-r1
+Depends: libc
+Source: feeds/passwall_packages/shadow-tls
+SourceName: shadow-tls
+License: MIT
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1790317766
+URL: https://github.com/ihciah/shadow-tls
+Maintainer: Tianling Shen <cnsztl@immortalwrt.org>
+Architecture: aarch64_cortex-a53
+Installed-Size: 3031040
+Filename: shadow-tls_0.2.25-r1_aarch64_cortex-a53.ipk
+Size: 1520918
+SHA256sum: 18cd02fbb3d97281c3133964c128e7db2e3433934c268e0956c9125b1e98ca3d
+Description:  A proxy to expose real tls handshake to the firewall.
+ 
+ It works like trojan but it does not require signing certificate.
+ The firewall will see real tls handshake with valid certificate
+ that you choose.
+
+Package: shadowsocks-rust-sslocal
+Version: 1.25.0-r1
+Depends: libc
+Source: feeds/passwall_packages/shadowsocks-rust
+SourceName: shadowsocks-rust
+License: MIT
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1790317766
+URL: https://github.com/shadowsocks/shadowsocks-rust
+Maintainer: Tianling Shen <cnsztl@immortalwrt.org>
+Architecture: aarch64_cortex-a53
+Installed-Size: 7956480
+Filename: shadowsocks-rust-sslocal_1.25.0-r1_aarch64_cortex-a53.ipk
+Size: 3877127
+SHA256sum: 3e5a05c4e0bf7c043cd37a2156b7c8505ffb28e2a3d04857f31717a8416ece71
+Description:  shadowsocks-rust sslocal
+
+Package: shadowsocks-rust-ssmanager
+Version: 1.25.0-r1
+Depends: libc
+Source: feeds/passwall_packages/shadowsocks-rust
+SourceName: shadowsocks-rust
+License: MIT
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1790317766
+URL: https://github.com/shadowsocks/shadowsocks-rust
+Maintainer: Tianling Shen <cnsztl@immortalwrt.org>
+Architecture: aarch64_cortex-a53
+Installed-Size: 6440960
+Filename: shadowsocks-rust-ssmanager_1.25.0-r1_aarch64_cortex-a53.ipk
+Size: 3117671
+SHA256sum: 57e8864660ea74c7e4203e0f8b6f14962d20457df1ef411900eeefcd63fc4d40
+Description:  shadowsocks-rust ssmanager
+
+Package: shadowsocks-rust-ssserver
+Version: 1.25.0-r1
+Depends: libc
+Source: feeds/passwall_packages/shadowsocks-rust
+SourceName: shadowsocks-rust
+License: MIT
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1790317766
+URL: https://github.com/shadowsocks/shadowsocks-rust
+Maintainer: Tianling Shen <cnsztl@immortalwrt.org>
+Architecture: aarch64_cortex-a53
+Installed-Size: 6318080
+Filename: shadowsocks-rust-ssserver_1.25.0-r1_aarch64_cortex-a53.ipk
+Size: 3063084
+SHA256sum: 4f5a7c4d88b30c5cd92cc4c88a29383b087573bfe52946ad1acea00c851b0638
+Description:  shadowsocks-rust ssserver
+
+Package: shadowsocks-rust-ssservice
+Version: 1.25.0-r1
+Depends: libc
+Source: feeds/passwall_packages/shadowsocks-rust
+SourceName: shadowsocks-rust
+License: MIT
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1790317766
+URL: https://github.com/shadowsocks/shadowsocks-rust
+Maintainer: Tianling Shen <cnsztl@immortalwrt.org>
+Architecture: aarch64_cortex-a53
+Installed-Size: 8345600
+Filename: shadowsocks-rust-ssservice_1.25.0-r1_aarch64_cortex-a53.ipk
+Size: 4059731
+SHA256sum: d45db55c9f2dc93ebddcd1bd3e0b35dad383beec999f7503c561e85f154749fb
+Description:  shadowsocks-rust ssservice
+
+Package: shadowsocks-rust-ssurl
+Version: 1.25.0-r1
+Depends: libc
+Source: feeds/passwall_packages/shadowsocks-rust
+SourceName: shadowsocks-rust
+License: MIT
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1790317766
+URL: https://github.com/shadowsocks/shadowsocks-rust
+Maintainer: Tianling Shen <cnsztl@immortalwrt.org>
+Architecture: aarch64_cortex-a53
+Installed-Size: 1843200
+Filename: shadowsocks-rust-ssurl_1.25.0-r1_aarch64_cortex-a53.ipk
+Size: 908242
+SHA256sum: 2a87f1115f908a281f1831a59e715b405805dbfdce53ffd0d5ca244b3ac4aa57
+Description:  shadowsocks-rust ssurl
+
+Package: shadowsocksr-libev-ssr-check
+Version: 2.5.6-r13
+Depends: libc, libev, libsodium, libopenssl3, libpthread, libpcre2, libudns, zlib
+Source: feeds/passwall_packages/shadowsocksr-libev
+SourceName: shadowsocksr-libev
+License: GPL-3.0
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1790317766
+URL: https://github.com/shadowsocksrr/shadowsocksr-libev
+Architecture: aarch64_cortex-a53
+Installed-Size: 71680
+Filename: shadowsocksr-libev-ssr-check_2.5.6-r13_aarch64_cortex-a53.ipk
+Size: 3386
+SHA256sum: 1908375b24df28338a9f7ade2be74247f015bbf30a914325a8ff4ffe2e8bf4b7
+Description:  shadowsocksr-libev ssr-check
+
+Package: shadowsocksr-libev-ssr-local
+Version: 2.5.6-r13
+Depends: libc, libev, libsodium, libopenssl3, libpthread, libpcre2, libudns, zlib
+Source: feeds/passwall_packages/shadowsocksr-libev
+SourceName: shadowsocksr-libev
+License: GPL-3.0
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1790317766
+URL: https://github.com/shadowsocksrr/shadowsocksr-libev
+Architecture: aarch64_cortex-a53
+Installed-Size: 204800
+Filename: shadowsocksr-libev-ssr-local_2.5.6-r13_aarch64_cortex-a53.ipk
+Size: 63499
+SHA256sum: 9cfe3f8dc3038190ffc5361d9bb9baa697894325b3f452fb7b0c665db2be58c7
+Description:  shadowsocksr-libev ssr-local
+
+Package: shadowsocksr-libev-ssr-nat
+Version: 2.5.6-r13
+Depends: libc, libev, libsodium, libopenssl3, libpthread, libpcre2, libudns, zlib
+Source: feeds/passwall_packages/shadowsocksr-libev
+SourceName: shadowsocksr-libev
+License: GPL-3.0
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1790317766
+URL: https://github.com/shadowsocksrr/shadowsocksr-libev
+Architecture: aarch64_cortex-a53
+Installed-Size: 10240
+Filename: shadowsocksr-libev-ssr-nat_2.5.6-r13_aarch64_cortex-a53.ipk
+Size: 3020
+SHA256sum: 99fb3217a311c826396cfbf9c26b04c9509def45bc549168d4534f5246d8dddb
+Description:  shadowsocksr-libev ssr-nat
+
+Package: shadowsocksr-libev-ssr-redir
+Version: 2.5.6-r13
+Depends: libc, libev, libsodium, libopenssl3, libpthread, libpcre2, libudns, zlib
+Source: feeds/passwall_packages/shadowsocksr-libev
+SourceName: shadowsocksr-libev
+License: GPL-3.0
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1790317766
+URL: https://github.com/shadowsocksrr/shadowsocksr-libev
+Architecture: aarch64_cortex-a53
+Installed-Size: 143360
+Filename: shadowsocksr-libev-ssr-redir_2.5.6-r13_aarch64_cortex-a53.ipk
+Size: 57025
+SHA256sum: 59ec0203af84b7b1b2f7a49e39aed32e96e0f0f7663e3be0e5bcb894b71d0eae
+Description:  shadowsocksr-libev ssr-redir
+
+Package: shadowsocksr-libev-ssr-server
+Version: 2.5.6-r13
+Depends: libc, libev, libsodium, libopenssl3, libpthread, libpcre2, libudns, zlib
+Source: feeds/passwall_packages/shadowsocksr-libev
+SourceName: shadowsocksr-libev
+License: GPL-3.0
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1790317766
+URL: https://github.com/shadowsocksrr/shadowsocksr-libev
+Architecture: aarch64_cortex-a53
+Installed-Size: 204800
+Filename: shadowsocksr-libev-ssr-server_2.5.6-r13_aarch64_cortex-a53.ipk
+Size: 66868
+SHA256sum: aa779cb282aa4ef39ab754b8c95b4ccb4f03994e7d5256a91f3e573a1ff91766
+Description:  shadowsocksr-libev ssr-server
+
+Package: simple-obfs-client
+Version: 0.0.5-r3
+Depends: libc, libpthread, libev
+Provides: simple-obfs
+Source: feeds/passwall_packages/simple-obfs
+SourceName: simple-obfs
+License: GPL-3.0-or-later
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1790317766
+URL: https://github.com/shadowsocks/simple-obfs
+Maintainer: Jian Chang <aa65535@live.com>
+Architecture: aarch64_cortex-a53
+Installed-Size: 143360
+Filename: simple-obfs-client_0.0.5-r3_aarch64_cortex-a53.ipk
+Size: 32035
+SHA256sum: 50b997661838bff7cd3fe828714a031f0459ef527e0b556f93dd4341b9a60b21
+Description:  Simple-obfs is a simple obfusacting tool, designed as plugin server of shadowsocks.
+
+Package: simple-obfs-server
+Version: 0.0.5-r3
+Depends: libc, libpthread, libev
+Source: feeds/passwall_packages/simple-obfs
+SourceName: simple-obfs
+License: GPL-3.0-or-later
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1790317766
+URL: https://github.com/shadowsocks/simple-obfs
+Maintainer: Jian Chang <aa65535@live.com>
+Architecture: aarch64_cortex-a53
+Installed-Size: 143360
+Filename: simple-obfs-server_0.0.5-r3_aarch64_cortex-a53.ipk
+Size: 34626
+SHA256sum: 2062aab72a9b21c0d26c9c9ea2da9002d048def7dfa0f715b2f0ff5aaf072d55
+Description:  Simple-obfs is a simple obfusacting tool, designed as plugin server of shadowsocks.
+
+Package: sing-box
+Version: 1.14.2-r1
+Depends: libc, ca-bundle, kmod-inet-diag, kmod-netlink-diag, kmod-tun
+Source: feeds/passwall_packages/sing-box
+SourceName: sing-box
+License: GPL-3.0-or-later
+LicenseFiles: LICENSE
+Section: net
+Require-User: sing-box=5566:sing-box=5566
+SourceDateEpoch: 1790317766
+URL: https://sing-box.sagernet.org/
+Maintainer: Tianling Shen <cnsztl@immortalwrt.org>
+Architecture: aarch64_cortex-a53
+Installed-Size: 55552000
+Filename: sing-box_1.14.2-r1_aarch64_cortex-a53.ipk
+Size: 19417512
+SHA256sum: f67246091fc7c801c9cc00accc74ac91ca11b2e2742c26c6b8eb2ed0babea7aa
+Description:  Sing-box is a universal proxy platform which supports hysteria, SOCKS, Shadowsocks,
+ ShadowTLS, Tor, trojan, VLess, VMess, WireGuard and so on.
+
+Package: tcping
+Version: 0.3-r1
+Depends: libc
+Source: feeds/passwall_packages/tcping
+SourceName: tcping
+License: GPL-2.0-only
+LicenseFiles: license.txt
+Section: net
+SourceDateEpoch: 1790317766
+URL: https://github.com/jlyo/tcping
+Architecture: aarch64_cortex-a53
+Installed-Size: 71680
+Filename: tcping_0.3-r1_aarch64_cortex-a53.ipk
+Size: 4316
+SHA256sum: af0c3d9285b04e15922a5e5d7f1c83452641593889844c4514f64777e0b0ca95
+Description:  tcping measures the latency of a tcp-connection
+
+Package: v2ray-geoip
+Version: 202609240030.1
+Depends: libc
+Source: feeds/passwall_packages/v2ray-geodata
+SourceName: v2ray-geodata
+License: CC-BY-SA-4.0
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1790317766
+URL: https://www.v2fly.org
+Maintainer: Tianling Shen <cnsztl@immortalwrt.org>
+Architecture: all
+Installed-Size: 16640000
+Filename: v2ray-geoip_202609240030.1_all.ipk
+Size: 3452848
+SHA256sum: ba17404f26fe62d5f6fe238fb26854ffc0a8b79a2e2c2b9ed9d8574381d967d2
+Description:  GeoIP List for V2Ray
+
+Package: v2ray-geosite
+Version: 202609250012.1
+Depends: libc
+Source: feeds/passwall_packages/v2ray-geodata
+SourceName: v2ray-geodata
+License: MIT
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1790317766
+URL: https://www.v2fly.org
+Maintainer: Tianling Shen <cnsztl@immortalwrt.org>
+Architecture: all
+Installed-Size: 11130880
+Filename: v2ray-geosite_202609250012.1_all.ipk
+Size: 3661467
+SHA256sum: 94eb98b346e5f0ee89bec13cad130fd08918ea2598fe008b3fe1a9269ebe10d8
+Description:  Geosite List for V2Ray
+
+Package: v2ray-plugin
+Version: 5.49.0-r1
+Depends: libc, ca-bundle
+Source: feeds/passwall_packages/v2ray-plugin
+SourceName: v2ray-plugin
+License: MIT
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1790317766
+URL: https://github.com/teddysun/v2ray-plugin
+Maintainer: madeye <max.c.lv@gmail.com>
+Architecture: aarch64_cortex-a53
+Installed-Size: 16793600
+Filename: v2ray-plugin_5.49.0-r1_aarch64_cortex-a53.ipk
+Size: 6194509
+SHA256sum: a04fd8068a94c052bd2f786ae553e4614cbdac478a632424790f96cdf055d550
+Description:  SIP003 plugin for shadowsocks, based on v2ray
+
+Package: xray-core
+Version: 26.9.9-r1
+Depends: libc, ca-bundle
+Source: feeds/passwall_packages/xray-core
+SourceName: Xray-core
+License: MPL-2.0
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1790317766
+URL: https://xtls.github.io
+Maintainer: Tianling Shen <cnsztl@immortalwrt.org>
+Architecture: aarch64_cortex-a53
+Installed-Size: 31580160
+Filename: xray-core_26.9.9-r1_aarch64_cortex-a53.ipk
+Size: 11330002
+SHA256sum: 848234f54b508bd9fe003ca929423246d8f67dc3b8343090a9eab06b851e0363
+Description:  Xray, Penetrates Everything. It helps you to build your own computer network.
+ It secures your network connections and thus protects your privacy.
+
+Package: xray-plugin
+Version: 1.8.24-r1
+Depends: libc, ca-bundle
+Source: feeds/passwall_packages/xray-plugin
+SourceName: xray-plugin
+License: MIT
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1790317766
+URL: https://github.com/teddysun/xray-plugin
+Maintainer: Tianling Shen <cnsztl@immortalwrt.org>
+Architecture: aarch64_cortex-a53
+Installed-Size: 18851840
+Filename: xray-plugin_1.8.24-r1_aarch64_cortex-a53.ipk
+Size: 6997773
+SHA256sum: 409f87a8f2f2a7d10786214bef680d518c508ddda0800ea8dcedd07b780e1fb1
+Description:  SIP003 plugin for Shadowsocks, based on Xray
+
