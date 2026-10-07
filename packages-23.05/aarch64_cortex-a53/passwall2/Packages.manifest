@@ -1,0 +1,57 @@
+Package: luci-app-passwall2
+Version: 26.10.1
+Depends: libc, coreutils, coreutils-base64, coreutils-nohup, coreutils-timeout, curl, ip-full, libuci-lua, lua, luci-compat, luci-lib-jsonc, lyaml, resolveip, tcping, geoview, v2ray-geoip, v2ray-geosite, unzip, luci-lua-runtime
+Source: feeds/passwall2/luci-app-passwall2
+SourceName: luci-app-passwall2
+Section: luci
+SourceDateEpoch: 1791013922
+Maintainer: OpenWrt LuCI community
+Architecture: all
+Installed-Size: 345895
+Filename: luci-app-passwall2_26.10.1_all.ipk
+Size: 346962
+SHA256sum: e6fea0dfa6741d26f2672ab356c7140174ab41d9d384adf7c6aebc1974c0f6b1
+Description:  LuCI support for PassWall 2
+
+Package: luci-i18n-passwall2-ru
+Version: 26.10.1
+Depends: libc, luci-app-passwall2
+Source: feeds/passwall2/luci-app-passwall2
+SourceName: luci-i18n-passwall2-ru
+Section: luci
+SourceDateEpoch: 1791013922
+Architecture: all
+Installed-Size: 23522
+Filename: luci-i18n-passwall2-ru_26.10.1_all.ipk
+Size: 24269
+SHA256sum: 2e82fcc33f1ce6ffc20a8acef66fefaab708880e032cabe0808ab19a09b9aaae
+Description:  Translation for luci-app-passwall2 - Русский (Russian)
+
+Package: luci-i18n-passwall2-zh-cn
+Version: 26.10.1
+Depends: libc, luci-app-passwall2
+Source: feeds/passwall2/luci-app-passwall2
+SourceName: luci-i18n-passwall2-zh-cn
+Section: luci
+SourceDateEpoch: 1791013922
+Architecture: all
+Installed-Size: 19541
+Filename: luci-i18n-passwall2-zh-cn_26.10.1_all.ipk
+Size: 20309
+SHA256sum: 69982ff1414df4b85b2cfa44ef46f885695b07b0d7f4cd144af3485706043618
+Description:  Translation for luci-app-passwall2 - 简体中文 (Chinese Simplified)
+
+Package: luci-i18n-passwall2-zh-tw
+Version: 26.10.1
+Depends: libc, luci-app-passwall2
+Source: feeds/passwall2/luci-app-passwall2
+SourceName: luci-i18n-passwall2-zh-tw
+Section: luci
+SourceDateEpoch: 1791013922
+Architecture: all
+Installed-Size: 19722
+Filename: luci-i18n-passwall2-zh-tw_26.10.1_all.ipk
+Size: 20470
+SHA256sum: cb78ae1035bd2a5909e4bb6e6f8595c73654fd4c4b47186739d696f067018c49
+Description:  Translation for luci-app-passwall2 - 繁體中文 (Chinese Traditional)
+
