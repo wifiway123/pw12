@@ -1,0 +1,260 @@
+Package: chinadns-ng
+Version: 2025.08.09-1
+Depends: libc
+Source: feeds/passwall_packages/chinadns-ng
+SourceName: chinadns-ng
+License: AGPL-3.0-only
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1755050199
+Maintainer: sbwml <admin@cooluc.com>
+Architecture: mipsel_24kc
+Installed-Size: 300161
+Filename: chinadns-ng_2025.08.09-1_mipsel_24kc.ipk
+Size: 299458
+SHA256sum: 21863d32e32cc8833cb52b490dc2cc56d0bcec9511e1b5c6576d82e5a979c966
+Description:  ChinaDNS next generation, refactoring with epoll and ipset.
+
+Package: dns2socks
+Version: 2.1-3
+Depends: libc, libpthread
+Source: feeds/passwall_packages/dns2socks
+SourceName: dns2socks
+License: BSD-3-Clause
+Section: net
+SourceDateEpoch: 1792331412
+Maintainer: ghostmaker
+Architecture: mipsel_24kc
+Installed-Size: 10850
+Filename: dns2socks_2.1-3_mipsel_24kc.ipk
+Size: 11636
+SHA256sum: b2349a1dbe0dadd1266a44befd0a3bf6b98bce055bff48aef38fb53e33fb67a0
+Description:  This is a command line utility to resolve DNS requests via
+ a SOCKS tunnel like Tor or a HTTP proxy.
+
+Package: geoview
+Version: 0.2.8-1
+Depends: libc
+Source: feeds/passwall_packages/geoview
+SourceName: geoview
+License: Apache-2.0
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1792388005
+Maintainer: snowie2000
+Architecture: mipsel_24kc
+Installed-Size: 3133001
+Filename: geoview_0.2.8-1_mipsel_24kc.ipk
+Size: 3128658
+SHA256sum: b65c2fd92abb27f3192f5dfed2b51eec45f4919268896378c74ab8dd8fc05e50
+Description:  geoview is a handy tool to extract useful information from geo* files.
+
+Package: hysteria
+Version: 2.13.0-1
+Depends: libc, ca-bundle
+Source: feeds/passwall_packages/hysteria
+SourceName: hysteria
+License: MIT
+Section: net
+SourceDateEpoch: 1791186690
+Maintainer: Tianling Shen <cnsztl@immortalwrt.org>
+Architecture: mipsel_24kc
+Installed-Size: 8258937
+Filename: hysteria_2.13.0-1_mipsel_24kc.ipk
+Size: 8250941
+SHA256sum: 8c68d69f4ecaee8a47e7e8fb491243fbdf4b13e47fc9d6b715dc2da595f5bc44
+Description:  Hysteria is a feature-packed network utility optimized for networks
+ of poor quality (e.g. satellite connections, congested public Wi-Fi,
+ connecting from China to servers abroad) powered by a custom version
+ of QUIC protocol.
+
+Package: ipt2socks
+Version: 1.1.4-3
+Depends: libc, libpthread
+Source: feeds/passwall_packages/ipt2socks
+SourceName: ipt2socks
+License: AGPL-3.0
+Section: net
+SourceDateEpoch: 1716035253
+Architecture: mipsel_24kc
+Installed-Size: 24735
+Filename: ipt2socks_1.1.4-3_mipsel_24kc.ipk
+Size: 25472
+SHA256sum: b05f0e74cbb6d1077fb3c990e1d65f0a31276626f4fef073b9d7e794afa03edf
+Description:  Utility for converting iptables (redirect/tproxy) to socks5.
+
+Package: microsocks
+Version: 1.0.5-2
+Depends: libc, libpthread
+Source: feeds/passwall_packages/microsocks
+SourceName: microsocks
+License: MIT
+LicenseFiles: COPYING
+Section: net
+SourceDateEpoch: 1775619603
+Maintainer: lean
+Architecture: mipsel_24kc
+Installed-Size: 6464
+Filename: microsocks_1.0.5-2_mipsel_24kc.ipk
+Size: 7318
+SHA256sum: b418764fe5f0ec85c761df9c2de7ee48cfe732a9e101384bde7e7d8cb85f9833
+Description:  A SOCKS5 service that you can run on your remote boxes to tunnel connections
+ through them, if for some reason SSH doesn't cut it for you.
+ This version supports forwarding rules.
+
+Package: naiveproxy
+Version: 154.0.8037.49-4
+Depends: libc, libatomic1
+Source: feeds/passwall_packages/naiveproxy
+SourceName: naiveproxy
+License: BSD 3-Clause
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1791380783
+Maintainer: sbwml <admin@cooluc.com>
+Architecture: mipsel_24kc
+Installed-Size: 4612972
+Filename: naiveproxy_154.0.8037.49-4_mipsel_24kc.ipk
+Size: 4600792
+SHA256sum: 281bff16053bb25719567007647a8680ae542dc13ccec1f242dda695e88efa5c
+Description:  NaïveProxy uses Chrome's network stack to camouflage traffic with strong
+ censorship resistance and low detectability. Reusing Chrome's stack also
+ ensures best practices in performance and security.
+
+Package: simple-obfs-client
+Version: 0.0.5-3
+Depends: libc, libpthread, libev
+Provides: simple-obfs
+Source: feeds/passwall_packages/simple-obfs
+SourceName: simple-obfs-client
+License: GPL-3.0-or-later
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1754489965
+Maintainer: Jian Chang <aa65535@live.com>
+Architecture: mipsel_24kc
+Installed-Size: 24262
+Filename: simple-obfs-client_0.0.5-3_mipsel_24kc.ipk
+Size: 25030
+SHA256sum: d7153d2105f5601404b075fa2f1ef4e65a51a5ff2d10fee4f6566c6a970387c5
+Description:  Simple-obfs is a simple obfusacting tool, designed as plugin server of shadowsocks.
+
+Package: simple-obfs-server
+Version: 0.0.5-3
+Depends: libc, libpthread, libev
+Source: feeds/passwall_packages/simple-obfs
+SourceName: simple-obfs-server
+License: GPL-3.0-or-later
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1754489965
+Maintainer: Jian Chang <aa65535@live.com>
+Architecture: mipsel_24kc
+Installed-Size: 26093
+Filename: simple-obfs-server_0.0.5-3_mipsel_24kc.ipk
+Size: 26878
+SHA256sum: 1adf5de873a12b7702b31e24809b50855bf2b6250fbabaa0cfd9516cdb46c62a
+Description:  Simple-obfs is a simple obfusacting tool, designed as plugin server of shadowsocks.
+
+Package: tcping
+Version: 0.3-1
+Depends: libc
+Source: feeds/passwall_packages/tcping
+SourceName: tcping
+License: GPL-2.0-only
+LicenseFiles: license.txt
+Section: net
+SourceDateEpoch: 1754734070
+Architecture: mipsel_24kc
+Installed-Size: 3896
+Filename: tcping_0.3-1_mipsel_24kc.ipk
+Size: 4597
+SHA256sum: 199cb83119de802af2d4ebdeb3f27f35aac543798186145fb2e06ff5430b9f0d
+Description:  tcping measures the latency of a tcp-connection
+
+Package: v2ray-geoip
+Version: 202610160207.1
+Depends: libc
+Source: feeds/passwall_packages/v2ray-geodata
+SourceName: v2ray-geoip
+License: CC-BY-SA-4.0
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1792256086
+Maintainer: Tianling Shen <cnsztl@immortalwrt.org>
+Architecture: all
+Installed-Size: 3694960
+Filename: v2ray-geoip_202610160207.1_all.ipk
+Size: 3447111
+SHA256sum: b88af3aee680d933c95bdd2ad140225d2b5694064d66db6c59e526c0841619bc
+Description:  GeoIP List for V2Ray
+
+Package: v2ray-geosite
+Version: 202610162206.1
+Depends: libc
+Source: feeds/passwall_packages/v2ray-geodata
+SourceName: v2ray-geosite
+License: MIT
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1792256086
+Maintainer: Tianling Shen <cnsztl@immortalwrt.org>
+Architecture: all
+Installed-Size: 3686528
+Filename: v2ray-geosite_202610162206.1_all.ipk
+Size: 3686869
+SHA256sum: 9e225f52c3eb0e16f16fb5f1b5c3b8d7381a064a310e09c7e4a76fb2478a2bd9
+Description:  Geosite List for V2Ray
+
+Package: v2ray-plugin
+Version: 5.49.0-1
+Depends: libc, ca-bundle
+Source: feeds/passwall_packages/v2ray-plugin
+SourceName: v2ray-plugin
+License: MIT
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1776086252
+Maintainer: madeye <max.c.lv@gmail.com>
+Architecture: mipsel_24kc
+Installed-Size: 6259083
+Filename: v2ray-plugin_5.49.0-1_mipsel_24kc.ipk
+Size: 6252394
+SHA256sum: 62e0b29e51c95fa0e31691422c7d14d126ddbfea9acef331229eb0f79ea298c2
+Description:  SIP003 plugin for shadowsocks, based on v2ray
+
+Package: xray-core
+Version: 26.10.17-1
+Depends: libc, ca-bundle
+Source: feeds/passwall_packages/xray-core
+SourceName: xray-core
+License: MPL-2.0
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1792257525
+Maintainer: Tianling Shen <cnsztl@immortalwrt.org>
+Architecture: mipsel_24kc
+Installed-Size: 10820209
+Filename: xray-core_26.10.17-1_mipsel_24kc.ipk
+Size: 10810861
+SHA256sum: 3bf6eff01ad3549cce78798595aff8f5c33bf31f8a5526c0fe7f9a36942d4898
+Description:  Xray, Penetrates Everything. It helps you to build your own computer network.
+ It secures your network connections and thus protects your privacy.
+
+Package: xray-plugin
+Version: 1.8.24-1
+Depends: libc, ca-bundle
+Source: feeds/passwall_packages/xray-plugin
+SourceName: xray-plugin
+License: MIT
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1771732515
+Maintainer: Tianling Shen <cnsztl@immortalwrt.org>
+Architecture: mipsel_24kc
+Installed-Size: 7072913
+Filename: xray-plugin_1.8.24-1_mipsel_24kc.ipk
+Size: 7065062
+SHA256sum: 45ccd0d4b68d147e84aeadbfb4b6cf83a9f371f38ebb060c3f49dee5cb3f7ba6
+Description:  SIP003 plugin for Shadowsocks, based on Xray
+
