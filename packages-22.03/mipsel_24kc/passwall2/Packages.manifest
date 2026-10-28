@@ -1,0 +1,57 @@
+Package: luci-app-passwall2
+Version: 26.10.20
+Depends: libc, coreutils, coreutils-base64, coreutils-nohup, coreutils-timeout, curl, ip-full, libuci-lua, lua, luci-compat, luci-lib-jsonc, lyaml, resolveip, tcping, geoview, v2ray-geoip, v2ray-geosite, unzip
+Source: feeds/passwall2/luci-app-passwall2
+SourceName: luci-app-passwall2
+Section: luci
+SourceDateEpoch: 1793110304
+Maintainer: OpenWrt LuCI community
+Architecture: all
+Installed-Size: 365402
+Filename: luci-app-passwall2_26.10.20_all.ipk
+Size: 366325
+SHA256sum: 0fa9ff0e2118136170ca8a746b6d3172492fb7b96c9a0716ed7fa3282625b400
+Description:  LuCI support for PassWall 2
+
+Package: luci-i18n-passwall2-ru
+Version: 26.10.20
+Depends: libc, luci-app-passwall2
+Source: feeds/passwall2/luci-app-passwall2
+SourceName: luci-i18n-passwall2-ru
+Section: luci
+SourceDateEpoch: 1793110304
+Architecture: all
+Installed-Size: 24755
+Filename: luci-i18n-passwall2-ru_26.10.20_all.ipk
+Size: 25521
+SHA256sum: 79004060a7fbb4535b038ebcdc6fd75659cd010bb772bcf972a99dabd8eacd7e
+Description:  Translation for luci-app-passwall2 - Русский (Russian)
+
+Package: luci-i18n-passwall2-zh-cn
+Version: 26.10.20
+Depends: libc, luci-app-passwall2
+Source: feeds/passwall2/luci-app-passwall2
+SourceName: luci-i18n-passwall2-zh-cn
+Section: luci
+SourceDateEpoch: 1793110304
+Architecture: all
+Installed-Size: 20445
+Filename: luci-i18n-passwall2-zh-cn_26.10.20_all.ipk
+Size: 21292
+SHA256sum: 96025a639737c2c27a3394c4fcdc4c9d45408f5aac4a661b991fffb6c8000511
+Description:  Translation for luci-app-passwall2 - 简体中文 (Chinese Simplified)
+
+Package: luci-i18n-passwall2-zh-tw
+Version: 26.10.20
+Depends: libc, luci-app-passwall2
+Source: feeds/passwall2/luci-app-passwall2
+SourceName: luci-i18n-passwall2-zh-tw
+Section: luci
+SourceDateEpoch: 1793110304
+Architecture: all
+Installed-Size: 20712
+Filename: luci-i18n-passwall2-zh-tw_26.10.20_all.ipk
+Size: 21553
+SHA256sum: 3c51b7f8e02976782bb1d1b853b5a1e80e34b56677f5369cd9e313da32e0b436
+Description:  Translation for luci-app-passwall2 - 繁體中文 (Chinese Traditional)
+

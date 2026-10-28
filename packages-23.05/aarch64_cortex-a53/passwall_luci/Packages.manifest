@@ -1,0 +1,29 @@
+Package: luci-app-passwall
+Version: 26.10.22
+Depends: libc, coreutils, coreutils-base64, coreutils-nohup, coreutils-timeout, curl, chinadns-ng, dns2socks, dnsmasq-full, ip-full, libuci-lua, lua, luci-compat, luci-lib-jsonc, microsocks, resolveip, tcping, lyaml, luci-lua-runtime
+Source: feeds/passwall_luci/luci-app-passwall
+SourceName: luci-app-passwall
+Section: luci
+SourceDateEpoch: 1793110168
+Maintainer: OpenWrt LuCI community
+Architecture: all
+Installed-Size: 868020
+Filename: luci-app-passwall_26.10.22_all.ipk
+Size: 868375
+SHA256sum: 91f43cf75d18de14708e2da54483c8aff9b135bdb5845367de7779c20696b935
+Description:  LuCI support for PassWall
+
+Package: luci-i18n-passwall-zh-cn
+Version: 26.10.22
+Depends: libc, luci-app-passwall
+Source: feeds/passwall_luci/luci-app-passwall
+SourceName: luci-i18n-passwall-zh-cn
+Section: luci
+SourceDateEpoch: 1793110168
+Architecture: all
+Installed-Size: 16696
+Filename: luci-i18n-passwall-zh-cn_26.10.22_all.ipk
+Size: 17493
+SHA256sum: 9433ba9142d13cc9380fe1cc276e0fbfd0420b6f3699ac41cd830128550b11a8
+Description:  Translation for luci-app-passwall - 简体中文 (Chinese Simplified)
+
