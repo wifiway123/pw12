@@ -1,0 +1,190 @@
+Package: chinadns-ng
+Version: 2025.08.09-1
+Depends: libc
+License: AGPL-3.0-only
+Section: net
+Architecture: mipsel_24kc
+Installed-Size: 300161
+Filename: chinadns-ng_2025.08.09-1_mipsel_24kc.ipk
+Size: 299458
+SHA256sum: 21863d32e32cc8833cb52b490dc2cc56d0bcec9511e1b5c6576d82e5a979c966
+Description:  ChinaDNS next generation, refactoring with epoll and ipset.
+
+Package: dns2socks
+Version: 2.1-3
+Depends: libc, libpthread
+License: BSD-3-Clause
+Section: net
+Architecture: mipsel_24kc
+Installed-Size: 10850
+Filename: dns2socks_2.1-3_mipsel_24kc.ipk
+Size: 11636
+SHA256sum: b2349a1dbe0dadd1266a44befd0a3bf6b98bce055bff48aef38fb53e33fb67a0
+Description:  This is a command line utility to resolve DNS requests via
+ a SOCKS tunnel like Tor or a HTTP proxy.
+
+Package: geoview
+Version: 0.2.9-1
+Depends: libc
+License: Apache-2.0
+Section: net
+Architecture: mipsel_24kc
+Installed-Size: 3133728
+Filename: geoview_0.2.9-1_mipsel_24kc.ipk
+Size: 3129682
+SHA256sum: 45df690e4859b9b0ed3a330f978169894f28623e7cef8b4eccfee298cf327084
+Description:  geoview is a handy tool to extract useful information from geo* files.
+
+Package: hysteria
+Version: 2.13.0-1
+Depends: libc, ca-bundle
+License: MIT
+Section: net
+Architecture: mipsel_24kc
+Installed-Size: 8259662
+Filename: hysteria_2.13.0-1_mipsel_24kc.ipk
+Size: 8251763
+SHA256sum: d512f27b16205ad9840015dc0b5100aaf4f495e0d170c7ec29a865047963dff3
+Description:  Hysteria is a feature-packed network utility optimized for networks
+ of poor quality (e.g. satellite connections, congested public Wi-Fi,
+ connecting from China to servers abroad) powered by a custom version
+ of QUIC protocol.
+
+Package: ipt2socks
+Version: 1.1.4-3
+Depends: libc, libpthread
+License: AGPL-3.0
+Section: net
+Architecture: mipsel_24kc
+Installed-Size: 24735
+Filename: ipt2socks_1.1.4-3_mipsel_24kc.ipk
+Size: 25472
+SHA256sum: b05f0e74cbb6d1077fb3c990e1d65f0a31276626f4fef073b9d7e794afa03edf
+Description:  Utility for converting iptables (redirect/tproxy) to socks5.
+
+Package: microsocks
+Version: 1.0.5-2
+Depends: libc, libpthread
+License: MIT
+Section: net
+Architecture: mipsel_24kc
+Installed-Size: 5120
+Filename: microsocks_1.0.5-2_mipsel_24kc.ipk
+Size: 5929
+SHA256sum: 25da77af821c0633375f71e4084e054cdcaafb0f3a64e43451fe6adb7d96d57c
+Description:  A SOCKS5 service that you can run on your remote boxes to tunnel connections
+ through them, if for some reason SSH doesn't cut it for you.
+ This version supports forwarding rules.
+
+Package: naiveproxy
+Version: 154.0.8037.49-5
+Depends: libc, libatomic1
+License: BSD 3-Clause
+Section: net
+Architecture: mipsel_24kc
+Installed-Size: 4612741
+Filename: naiveproxy_154.0.8037.49-5_mipsel_24kc.ipk
+Size: 4600829
+SHA256sum: 2d2aa5f55db4d7439f6cdceac35efdaa99b49400b2afab648aae4df0388f947c
+Description:  NaïveProxy uses Chrome's network stack to camouflage traffic with strong
+ censorship resistance and low detectability. Reusing Chrome's stack also
+ ensures best practices in performance and security.
+
+Package: simple-obfs-client
+Version: 0.0.5-3
+Depends: libc, libpthread, libev
+Provides: simple-obfs
+License: GPL-3.0-or-later
+Section: net
+Architecture: mipsel_24kc
+Installed-Size: 24262
+Filename: simple-obfs-client_0.0.5-3_mipsel_24kc.ipk
+Size: 25030
+SHA256sum: d7153d2105f5601404b075fa2f1ef4e65a51a5ff2d10fee4f6566c6a970387c5
+Description:  Simple-obfs is a simple obfusacting tool, designed as plugin server of shadowsocks.
+
+Package: simple-obfs-server
+Version: 0.0.5-3
+Depends: libc, libpthread, libev
+License: GPL-3.0-or-later
+Section: net
+Architecture: mipsel_24kc
+Installed-Size: 26093
+Filename: simple-obfs-server_0.0.5-3_mipsel_24kc.ipk
+Size: 26878
+SHA256sum: 1adf5de873a12b7702b31e24809b50855bf2b6250fbabaa0cfd9516cdb46c62a
+Description:  Simple-obfs is a simple obfusacting tool, designed as plugin server of shadowsocks.
+
+Package: tcping
+Version: 0.3-1
+Depends: libc
+License: GPL-2.0-only
+Section: net
+Architecture: mipsel_24kc
+Installed-Size: 3896
+Filename: tcping_0.3-1_mipsel_24kc.ipk
+Size: 4597
+SHA256sum: 199cb83119de802af2d4ebdeb3f27f35aac543798186145fb2e06ff5430b9f0d
+Description:  tcping measures the latency of a tcp-connection
+
+Package: v2ray-geoip
+Version: 202611050019.1
+Depends: libc
+License: CC-BY-SA-4.0
+Section: net
+Architecture: all
+Installed-Size: 3676178
+Filename: v2ray-geoip_202611050019.1_all.ipk
+Size: 3430216
+SHA256sum: 39eccdc8c301e9f76e6a50607fb65d6dce1446453d6b83b3b32bac6795dfd102
+Description:  GeoIP List for V2Ray
+
+Package: v2ray-geosite
+Version: 202611082203.1
+Depends: libc
+License: MIT
+Section: net
+Architecture: all
+Installed-Size: 3752776
+Filename: v2ray-geosite_202611082203.1_all.ipk
+Size: 3753226
+SHA256sum: 9b735ec75473efcc9f48415af7bffacf2e081e0f971fcc87a16adbef1707c257
+Description:  Geosite List for V2Ray
+
+Package: v2ray-plugin
+Version: 5.49.0-1
+Depends: libc, ca-bundle
+License: MIT
+Section: net
+Architecture: mipsel_24kc
+Installed-Size: 6260307
+Filename: v2ray-plugin_5.49.0-1_mipsel_24kc.ipk
+Size: 6254284
+SHA256sum: c5f81b120b8845023ddc8f174593b20c282319740a0814dc10b65537708cc7ff
+Description:  SIP003 plugin for shadowsocks, based on v2ray
+
+Package: xray-core
+Version: 26.11.9-1
+Depends: libc, ca-bundle
+License: MPL-2.0
+Section: net
+Architecture: mipsel_24kc
+Installed-Size: 10956559
+Filename: xray-core_26.11.9-1_mipsel_24kc.ipk
+Size: 10946636
+SHA256sum: 085f34f6aae6aa3af406d2682b1b3c77139faa719950b1c8474867b25bea8f68
+Description:  Xray, Penetrates Everything. It helps you to build your own computer network.
+ It secures your network connections and thus protects your privacy.
+
+Package: xray-plugin
+Version: 1.8.24-1
+Depends: libc, ca-bundle
+License: MIT
+Section: net
+Architecture: mipsel_24kc
+Installed-Size: 7075456
+Filename: xray-plugin_1.8.24-1_mipsel_24kc.ipk
+Size: 7067523
+SHA256sum: 3f7e1efb5cabbc6a2b668586e4b31f7a07e27477fc6feb512bb0a83ee768175b
+Description:  SIP003 plugin for Shadowsocks, based on Xray
+

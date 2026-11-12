@@ -1,0 +1,72 @@
+Package: luci-app-passwall2
+Version: 26.11.11-r1
+Depends: libc, coreutils, coreutils-base64, coreutils-nohup, coreutils-timeout, curl, ip-full, libuci-lua, lua, luci-compat, luci-lib-jsonc, lyaml, resolveip, tcping, geoview, v2ray-geoip, v2ray-geosite, unzip, luci-lua-runtime
+Source: feeds/passwall2/luci-app-passwall2
+SourceName: luci-app-passwall2
+Section: luci
+SourceDateEpoch: 1794329139
+URL: https://github.com/openwrt/luci
+Maintainer: OpenWrt LuCI community
+Architecture: all
+Installed-Size: 1474560
+Filename: luci-app-passwall2_26.11.11-r1_all.ipk
+Size: 375047
+SHA256sum: ad46cd99de38d76309ce0407a3710911d7752ae809c8ac641a1f9ec8d6a3a48c
+Description:  LuCI support for PassWall 2
+
+Package: luci-i18n-passwall2-fa
+Version: 26.11.11
+Depends: libc, luci-app-passwall2
+Source: feeds/passwall2/luci-app-passwall2
+SourceName: luci-app-passwall2
+Section: luci
+SourceDateEpoch: 1794329139
+Architecture: all
+Installed-Size: 81920
+Filename: luci-i18n-passwall2-fa_26.11.11_all.ipk
+Size: 24778
+SHA256sum: 9bcf00b42b4e71c6d2307572a9b603fc746ac9b5e9a64bacbef718e23136f0da
+Description:  Translation for luci-app-passwall2 - Farsi (Persian)
+
+Package: luci-i18n-passwall2-ru
+Version: 26.11.11
+Depends: libc, luci-app-passwall2
+Source: feeds/passwall2/luci-app-passwall2
+SourceName: luci-app-passwall2
+Section: luci
+SourceDateEpoch: 1794329139
+Architecture: all
+Installed-Size: 92160
+Filename: luci-i18n-passwall2-ru_26.11.11_all.ipk
+Size: 25927
+SHA256sum: 3fa1517cbb99dfdd113a7238ac7c3c45385530c8d6d3ab5bec15375c47e6e7ad
+Description:  Translation for luci-app-passwall2 - Русский (Russian)
+
+Package: luci-i18n-passwall2-zh-cn
+Version: 26.11.11
+Depends: libc, luci-app-passwall2
+Source: feeds/passwall2/luci-app-passwall2
+SourceName: luci-app-passwall2
+Section: luci
+SourceDateEpoch: 1794329139
+Architecture: all
+Installed-Size: 61440
+Filename: luci-i18n-passwall2-zh-cn_26.11.11_all.ipk
+Size: 21653
+SHA256sum: 08b203357baafcf5b91610f9d31b2ae186de6d0e9d7f7021378999f7505ccc26
+Description:  Translation for luci-app-passwall2 - 简体中文 (Simplified Chinese)
+
+Package: luci-i18n-passwall2-zh-tw
+Version: 26.11.11
+Depends: libc, luci-app-passwall2
+Source: feeds/passwall2/luci-app-passwall2
+SourceName: luci-app-passwall2
+Section: luci
+SourceDateEpoch: 1794329139
+Architecture: all
+Installed-Size: 61440
+Filename: luci-i18n-passwall2-zh-tw_26.11.11_all.ipk
+Size: 21909
+SHA256sum: 84e6e42e0f8975c466b91c53c64b0fc32cfb0e6faa4ad56eae03270b7ff278ab
+Description:  Translation for luci-app-passwall2 - 正體中文 (Traditional Chinese)
+
